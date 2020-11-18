@@ -1,0 +1,16 @@
+.scroll{
+    max-height: 400px;
+    overflow-y: auto;
+    border: solid 1px #eee;
+    padding: 10px;
+}
+.avatar{
+    background-size: contain;
+    margin-bottom: 5px;
+    border-radius: 50%;
+}
+.avatar img{
+    width: 100px;
+    height: auto;
+    border-radius: 50%;
+}

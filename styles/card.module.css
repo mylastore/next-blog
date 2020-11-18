@@ -1,0 +1,17 @@
+.headingColor{
+    color: black;
+}
+a.noLink{
+    color: initial;
+}
+a.noLink:hover{
+    text-decoration: none !important;
+}
+
+.link:hover{
+    cursor: pointer;
+}
+.footerLink:hover{
+    cursor: pointer;
+    background: #ffffff;
+}
