@@ -2,7 +2,6 @@ import fetch from "isomorphic-fetch"
 import {API} from "../../config"
 import {handleSession} from "../auth"
 
-
 export const apiForm = (method, path, data, token) => {
   return fetch(`${API}/${path}`, {
     method: `${method}`,
