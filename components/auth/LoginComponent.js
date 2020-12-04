@@ -1,11 +1,16 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import {authenticate, isAuth} from '../../actions/auth'
 import Link from 'next/link'
 import Router from 'next/router'
 import {api} from '../../actions/api'
 import GoogleLoginComponent from "./GoogleLoginComponent"
+import {UserContext} from '../context/UserContext'
+import {Cookies} from "react-cookie"
 
+
+const cookies = new Cookies()
 const LoginComponent = () => {
+  const { user, storeUser } = useContext(UserContext)
   const [values, setValues] = useState({
     email: 'me@me.com',
     password: 'Password#1',
@@ -15,6 +20,7 @@ const LoginComponent = () => {
 
   const {email, password, loading, showForm} = values
 
+
   useEffect(() => {
     isAuth() && Router.push(`/`)
   }, [])
@@ -22,19 +28,22 @@ const LoginComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValues({...values, loading: true})
-    const user = {email, password}
+    const data = {email, password}
 
     try {
-      const res = await api('POST', 'user/login', user)
+      const res = await api('POST', 'user/login', data)
       if (res && res.status >= 400) {
         setValues({...values, loading: false})
         return flash(res.message, 'danger')
       }
       setValues({...values, email: '', password: '', loading: false})
-      await authenticate(res, () => {
-        return Router.push(`/public/${isAuth().username}`)
-      })
+      cookies.set('token', res.token);
 
+      delete res["token"]
+      await storeUser(res)
+      console.log('user? ',user)
+      await Router.push(`/secret`)
+      //return Router.push(`/public/${isAuth().username}`)
     } catch (err) {
       setValues({...values, loading: false})
       return flash(err.message, 'danger')

@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import {APP_NAME} from '../config'
 import Link from 'next/link'
-import {logout, isAuth} from '../actions/auth'
+import {logout} from '../actions/auth'
 import {api} from '../actions/api'
 import {
   Collapse,
@@ -14,32 +14,35 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem
-} from 'reactstrap';
-import Router from 'next/router';
+} from 'reactstrap'
+import Router from 'next/router'
 import nprogress from 'nprogress'
+
 
 Router.onRouteChangeStart = url => nprogress.start()
 Router.onRouteChangeComplete = url => nprogress.done()
 Router.onRouteError = url => nprogress.done()
 
 const DefaultNav = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
+  const user = props.user.user
+  console.log('DefaultNav user ',user)
+  const [isOpen, setIsOpen] = useState(false)
+  const toggle = () => setIsOpen(!isOpen)
 
   async function userLogout() {
-    try{
+    try {
       const res = await api('POST', 'user/logout')
-      if(res.status >= 400){
+      if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
       logout()
       await Router.push(`/login`)
 
-    }catch(err){
+    } catch (err) {
       return flash(err.message, 'danger')
     }
-
   }
+
 
   return (
     <div className="Site-header">
@@ -57,7 +60,7 @@ const DefaultNav = (props) => {
             </NavItem>
           </Nav>
           <Nav>
-            {!isAuth() && (
+            {!user && (
               <>
                 <NavItem>
                   <Link href="/login">
@@ -71,25 +74,25 @@ const DefaultNav = (props) => {
                 </NavItem>
               </>
             )}
-            {isAuth() && (
+            {user && (
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav>
-                  <img className='avatar' src={`${isAuth().avatar}`} alt="user avatar"/>
-                  {isAuth().username}&nbsp;&nbsp;
+                  <img className='avatar' src={`${user.avatar}`} alt="user avatar"/>
+                  {user.username}&nbsp;&nbsp;
                   <i className="fas fa-sort-down"> </i>
                 </DropdownToggle>
                 <DropdownMenu right>
-                  {isAuth() && isAuth().role === 'user' && (
-                  <DropdownItem>
-                    <NavItem>
-                      <Link href="/user/profile/update">
-                        <NavLink>User Panel</NavLink>
-                      </Link>
-                    </NavItem>
-                  </DropdownItem>
+                  {user && user.role === 'user' && (
+                    <DropdownItem>
+                      <NavItem>
+                        <Link href="/user/profile/update">
+                          <NavLink>User Panel</NavLink>
+                        </Link>
+                      </NavItem>
+                    </DropdownItem>
                   )}
                   <DropdownItem>
-                    {isAuth() && isAuth().role === 'admin' && (
+                    {user.role === 'admin' && (
                       <NavItem>
                         <Link href="/admin/blog">
                           <NavLink>Admin Panel</NavLink>
@@ -99,7 +102,7 @@ const DefaultNav = (props) => {
                   </DropdownItem>
                   <DropdownItem divider/>
                   <DropdownItem>
-                    {isAuth() && (
+                    {user && (
                       <NavItem>
                         <Link href="/login">
                           <NavLink onClick={() => userLogout(() => Router.replace(`/login`))}>Logout</NavLink>
