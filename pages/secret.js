@@ -1,17 +1,24 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {api} from '../actions/api'
-import {Cookies} from 'react-cookie'
+import Cookie from 'js-cookie'
 import {handleAuthSSR} from '../actions/authSSR'
 import Layout from "../components/Layout"
+import parseCookies from '../helpers/parseCookies'
+import Router from "next/router";
 
-const secretPage = ({}) => {
+const secretPage = ({serverCookie}) => {
 
+  const [token, setToken] = useState(()=> {
+    return serverCookie
+  });
   const [ping, setPing] = useState('Ping')
-  const cookies = new Cookies();
+
+  useEffect(()=>{
+    Cookie.set('token', JSON.stringify(token))
+  }, [token])
+
 
   const onPingCall = async (e) => {
-    const token = cookies.get('token')
-
     try {
       const res = await api('GET', 'ping', {}, token);
       return setPing(res.message)
@@ -35,14 +42,14 @@ const secretPage = ({}) => {
 
 }
 
-export async function getServerSideProps(ctx) {
-  if (!ctx.req.headers.cookie) {
-    ctx.res.statusCode = 302
-    ctx.res.setHeader('Location', `/singin`)
-    return {props: {}}
-  }
-  await handleAuthSSR(ctx)
-  return {props:{}}
+export async function getServerSideProps({req, res}) {
+  const cookies = parseCookies(req)
+  console.log(cookies.token)
+
+  await handleAuthSSR(req, res)
+  return {props:{
+    serverCookie: cookies.token
+  }}
 }
 
 

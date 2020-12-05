@@ -64,6 +64,16 @@ const DefaultNav = (props) => {
               <>
                 <NavItem>
                   <Link href="/login">
+                    <NavLink onClick={() => userLogout(() => Router.replace(`/login`))}>Logout</NavLink>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <Link href="/secret">
+                    <NavLink>Secret</NavLink>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <Link href="/login">
                     <NavLink>Login</NavLink>
                   </Link>
                 </NavItem>
