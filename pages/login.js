@@ -1,24 +1,12 @@
 import Layout from "../components/Layout"
-import parseCookies from "../helpers/parseCookies"
-import {useState, useEffect, useContext} from 'react'
+import {useState} from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
 import {api} from '../actions/api'
 import GoogleLoginComponent from "../components/auth/GoogleLoginComponent"
-import Cookie from 'js-cookie'
+import {authenticate} from '../actions/auth'
 
-const Login = ({initialRememberValue}) => {
-
-  const [rememberMe, setRememberMe] = useState(() => {
-    return (initialRememberValue)
-  })
-
-  useEffect(() => {
-    Cookie.set('rememberMe', rememberMe)
-    // console.log(  Cookie.getJSON('rememberMe').name )
-
-  }, [rememberMe])
-
+const Login = () => {
   const [values, setValues] = useState({
     email: 'me@me.com',
     password: 'Password#1',
@@ -40,12 +28,9 @@ const Login = ({initialRememberValue}) => {
         return flash(res.message, 'danger')
       }
       setValues({...values, email: '', password: '', loading: false})
-      Cookie.set('token', res.token, {expires: 7})
 
-      delete res["token"]
-      await setRememberMe(res)
+      await authenticate(res, ()=>{})
 
-      //await Router.push(`/secret`)
       await Router.push(`/public/${res.username}`)
     } catch (err) {
       setValues({...values, loading: false})
@@ -104,15 +89,6 @@ const Login = ({initialRememberValue}) => {
       </section>
     </Layout>
   )
-}
-
-export async function getServerSideProps({req}) {
-  const cookies = await parseCookies(req)
-  return {
-    props: {
-      initialRememberValue: cookies.rememberMe || null
-    }
-  }
 }
 
 export default Login

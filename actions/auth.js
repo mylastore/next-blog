@@ -1,23 +1,23 @@
 import cookie from 'js-cookie'
 
-export const handleSession = (res) => {
-  if (res.status === 440) {
-    flash('Session has expired.', 'danger')
-    logout()
-    setTimeout(()=>{
-      window.location.replace('/')
-    }, 1000)
-  }
-}
+// export const handleSession = (res) => {
+//   if (res.status === 440) {
+//     flash('Session has expired.', 'danger')
+//     logout()
+//     setTimeout(()=>{
+//       window.location.replace('/')
+//     }, 1000)
+//   }
+// }
 
 export const logout = () => {
   removeCookie('token')
   removeCookie('rememberMe')
 }
 
-export const setCookie = (key, value) => {
+export const setCookie = async (key, value) => {
   if (process.browser) {
-    cookie.set(key, value, {expires: 1, sameSite: 'strict'})
+    await cookie.set(key, value, {expires: 7})
   }
 }
 
@@ -27,39 +27,33 @@ export const removeCookie = (key) => {
   }
 }
 
-export const removeLocalStorage = (key) => {
-  if (process.browser) {
-    localStorage.removeItem(key)
-  }
-}
-
 export const getCookie = (key) => {
   if (process.browser) {
     return cookie.get(key)
   }
 }
 
-export const setLocalStorage = (key, value) => {
+export const getCookieAsJSON = (key) => {
   if (process.browser) {
-    localStorage.setItem(key, JSON.stringify(value))
+    return cookie.getJSON(key)
   }
 }
 
-export const authenticate = (data, next) => {
-  setCookie('token', data.token)
-  setTimeout(() => {
-    delete data['token']
-    setLocalStorage('user', data)
-    return next()
-  }, 100)
+export const authenticate = async (data, next) => {
+  await setCookie('token', data.token)
+
+  delete data['token']
+  await setCookie('rememberMe', data)
+  return next()
+
 
 }
 
 export const isAuth = () => {
   if (process.browser) {
     if (getCookie('token')) {
-      if (localStorage.getItem('user')) {
-        return JSON.parse(localStorage.getItem('user'))
+      if (getCookie('rememberMe')) {
+        return getCookieAsJSON('rememberMe')
       }
     }
     return false

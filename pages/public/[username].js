@@ -6,21 +6,15 @@ import timeAgo from "../../helpers/timeAgo"
 import Head from "next/head";
 import {APP_NAME, DOMAIN, FACEBOOK_ID} from "../../config";
 import AuthorEmailComponent from "../../components/forms/AuthorEmailComponent"
-import {useEffect, useState} from "react";
-import Cookie from 'js-cookie'
+import {isAuth} from "../../actions/auth"
 
-let preUserName
 
 const publicUserProfile = ({data, message}) => {
-  const [currentUser, setCurrentUser] = useState(null)
 
-  useEffect(()=>{
-    const authUser = Cookie.getJSON('rememberMe')
-    if(authUser){
-      preUserName = Cookie.getJSON('rememberMe').username
-      setCurrentUser(JSON.stringify(authUser))
-    }
-  }, [])
+  let currentUser
+  if (process.browser){
+    currentUser = isAuth().username
+  }
 
   const {user, blogs} = data
 
@@ -84,7 +78,7 @@ const publicUserProfile = ({data, message}) => {
                   <span className="small">Member Since </span>
                   <span className="small">{timeAgo(user.createdAt)}</span>
                   <hr/>
-                  {preUserName && user.username && user.role === 'admin' ? (
+                  {currentUser && user.username && user.role === 'admin' ? (
                   <Link href={'/admin/profile/update'}>
                     <button className="btn btn-primary">Update Profile</button>
                   </Link>

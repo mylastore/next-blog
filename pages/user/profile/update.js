@@ -1,11 +1,17 @@
 import Layout from "../../../components/Layout"
 import UserComponent from "../../../components/user/UserComponent"
 import {useEffect, useState} from "react"
-import {authenticate, getCookie, isAuth} from "../../../actions/auth"
+import {authenticate, getCookie,getCookieAsJSON, isAuth} from "../../../actions/auth"
 import {api} from "../../../actions/api"
 
 const updateProfile = () => {
-  const token = getCookie('token')
+  let currentUser
+
+  if (process.browser){
+    currentUser = isAuth()
+  }
+
+  //const user = getCookieAsJSON('rememberMe')
 
   const[passwordValues, setPasswordState] = useState({
     password: '',
@@ -35,7 +41,7 @@ const updateProfile = () => {
 
   const getUser = async () => {
     try{
-      const res = await api('POST', 'user/account', {}, token)
+      const res = await api('GET', `user/profile/${currentUser.username}`, {}, getCookie('token'))
       if(res.status >= 400){
         return flash(res.message, 'danger')
       }
@@ -49,7 +55,7 @@ const updateProfile = () => {
         avatar: res.avatar,
         about: res.about
       })
-      return authenticate(res, () => {})
+      //return authenticate(res, () => {})
 
     }catch(err){
       return flash(err.message, 'danger')
@@ -66,7 +72,7 @@ const updateProfile = () => {
     const userData = { username, name, email, about, location, website }
 
     try{
-      const res = await api('PATCH', `user/account/${currentUserName}`, userData, token)
+      const res = await api('PATCH', `user/account/${currentUserName}`, userData, getCookie('token'))
       if(res.status >= 400){
         window.scrollTo(500, 0);
         return flash(res.message, 'danger')
@@ -96,7 +102,7 @@ const updateProfile = () => {
       password
     }
     try{
-      const res = await api('POST', 'user/update-password', data, token)
+      const res = await api('POST', 'user/update-password', data, getCookie('token'))
       if(res.status !== 200){
         return flash(res.message, 'warning' )
       }
