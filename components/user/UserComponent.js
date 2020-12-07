@@ -9,7 +9,7 @@ const UserComponent = ({children}) => {
       Router.push(`/login`)
     }
   }, [])
-  return <>
+  return (
 
     <div className="row">
       <div className="col-md-3">
@@ -19,8 +19,7 @@ const UserComponent = ({children}) => {
         {children}
       </div>
     </div>
-
-  </>
+  )
 }
 
 export default UserComponent

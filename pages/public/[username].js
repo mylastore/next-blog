@@ -6,15 +6,24 @@ import timeAgo from "../../helpers/timeAgo"
 import Head from "next/head";
 import {APP_NAME, DOMAIN, FACEBOOK_ID} from "../../config";
 import AuthorEmailComponent from "../../components/forms/AuthorEmailComponent"
-import {isAuth} from "../../actions/auth"
+import {useEffect, useState} from "react";
+import Cookie from 'js-cookie'
+
+let preUserName
 
 const publicUserProfile = ({data, message}) => {
-  let currentUserName
+  const [currentUser, setCurrentUser] = useState(null)
 
-  if (process.browser) {
-    currentUserName = isAuth().username
-  }
+  useEffect(()=>{
+    const authUser = Cookie.getJSON('rememberMe')
+    if(authUser){
+      preUserName = Cookie.getJSON('rememberMe').username
+      setCurrentUser(JSON.stringify(authUser))
+    }
+  }, [])
+
   const {user, blogs} = data
+
   const head = () => (
     <Head>
       <title>{user.username} | {APP_NAME}</title>
@@ -35,8 +44,6 @@ const publicUserProfile = ({data, message}) => {
   const showBlogLinks = () => {
     if(blogs.length){
       return blogs.map((b, i) => {
-        console.log('b? ',b)
-        console.log('i', i)
         return (
           <div key={i}>
             <Link href={`/blog/${b.slug}`}>
@@ -49,9 +56,7 @@ const publicUserProfile = ({data, message}) => {
     return (
       <div><p>No Blogs Yet!</p></div>
     )
-
   }
-
 
   return (
     data === 'error' ?
@@ -79,7 +84,7 @@ const publicUserProfile = ({data, message}) => {
                   <span className="small">Member Since </span>
                   <span className="small">{timeAgo(user.createdAt)}</span>
                   <hr/>
-                  {currentUserName === user.username && user.role === 'admin' ? (
+                  {preUserName && user.username && user.role === 'admin' ? (
                   <Link href={'/admin/profile/update'}>
                     <button className="btn btn-primary">Update Profile</button>
                   </Link>

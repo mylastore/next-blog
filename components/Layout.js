@@ -2,19 +2,11 @@ import DefaultNav from '../components/DefaultNav'
 import Flash from '../components/Flash';
 import Search from './blog/Search'
 import Link from "next/link"
-import {UserContext} from "./context/UserContext"
 
 const Layout = ({children}) => {
-
   return (
     <div className="Site">
-
-      <UserContext.Consumer>
-        {(value) => (
-          <DefaultNav user={value}/>
-        )}
-      </UserContext.Consumer>
-
+      <DefaultNav />
       <Search/>
       <Flash/>
       <div className="Site-content">

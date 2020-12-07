@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {APP_NAME} from '../config'
 import Link from 'next/link'
 import {logout} from '../actions/auth'
@@ -17,17 +17,23 @@ import {
 } from 'reactstrap'
 import Router from 'next/router'
 import nprogress from 'nprogress'
-
+import Cookie from 'js-cookie'
 
 Router.onRouteChangeStart = url => nprogress.start()
 Router.onRouteChangeComplete = url => nprogress.done()
 Router.onRouteError = url => nprogress.done()
 
-const DefaultNav = (props) => {
-  const user = props.user.user
-  console.log('DefaultNav user ',user)
+const DefaultNav = ({token}) => {
+  const [user, setUser] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
   const toggle = () => setIsOpen(!isOpen)
+
+  useEffect(()=>{
+    const authUser = Cookie.getJSON('rememberMe')
+    if(authUser){
+      setUser(authUser)
+    }
+  }, [])
 
   async function userLogout() {
     try {
@@ -43,7 +49,6 @@ const DefaultNav = (props) => {
     }
   }
 
-
   return (
     <div className="Site-header">
       <Navbar color="light" light expand="md">
@@ -56,6 +61,11 @@ const DefaultNav = (props) => {
             <NavItem>
               <Link href="/blog">
                 <NavLink>Blog</NavLink>
+              </Link>
+            </NavItem>
+            <NavItem>
+              <Link href="/secret">
+                <NavLink>Secret</NavLink>
               </Link>
             </NavItem>
           </Nav>
@@ -130,6 +140,7 @@ const DefaultNav = (props) => {
 
     </div>
   )
+
 }
 
 export default DefaultNav

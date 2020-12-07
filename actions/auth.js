@@ -12,7 +12,7 @@ export const handleSession = (res) => {
 
 export const logout = () => {
   removeCookie('token')
-  removeLocalStorage('user')
+  removeCookie('rememberMe')
 }
 
 export const setCookie = (key, value) => {
