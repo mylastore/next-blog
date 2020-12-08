@@ -17,20 +17,25 @@ import {
 } from 'reactstrap'
 import Router from 'next/router'
 import nprogress from 'nprogress'
-import Cookie from 'js-cookie'
+import {getCookieAsJSON} from "../actions/auth"
+import {useWritable} from "../stores/userData"
 
 Router.onRouteChangeStart = url => nprogress.start()
 Router.onRouteChangeComplete = url => nprogress.done()
 Router.onRouteError = url => nprogress.done()
 
-const DefaultNav = ({token}) => {
-  const [user, setUser] = useState(null)
+const DefaultNav = () => {
+
+  const [user, setUser] = useState(() => {
+      getCookieAsJSON('rememberMe')
+    }
+  )
   const [isOpen, setIsOpen] = useState(false)
   const toggle = () => setIsOpen(!isOpen)
 
-  useEffect(()=>{
-    const authUser = Cookie.getJSON('rememberMe')
-    if(authUser){
+  useEffect(() => {
+    const authUser = getCookieAsJSON('rememberMe')
+    if (authUser) {
       setUser(authUser)
     }
   }, [])
@@ -41,9 +46,8 @@ const DefaultNav = ({token}) => {
       if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      logout()
+      await logout()
       await Router.push(`/login`)
-
     } catch (err) {
       return flash(err.message, 'danger')
     }

@@ -6,7 +6,6 @@ import 'react-quill/dist/quill.snow.css'
 import {useEffect} from "react"
 import Bus from "../helpers/bus"
 import {APP_NAME} from "../config"
-import UserContextProvider from '../components/context/UserContext'
 
 export default function App({Component, pageProps}) {
 
@@ -20,9 +19,7 @@ export default function App({Component, pageProps}) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Programming blogs | {APP_NAME}</title>
       </Head>
-      <UserContextProvider>
-        <Component {...pageProps} />
-      </UserContextProvider>
+      <Component {...pageProps} />
     </>
   )
 

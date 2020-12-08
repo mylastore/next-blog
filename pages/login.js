@@ -1,12 +1,16 @@
 import Layout from "../components/Layout"
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
 import {api} from '../actions/api'
 import GoogleLoginComponent from "../components/auth/GoogleLoginComponent"
 import {authenticate} from '../actions/auth'
+import parseCookies from "../helpers/parseCookies"
+import {useWritable} from "../stores/userData"
 
 const Login = () => {
+
+
   const [values, setValues] = useState({
     email: 'me@me.com',
     password: 'Password#1',
@@ -30,13 +34,15 @@ const Login = () => {
       setValues({...values, email: '', password: '', loading: false})
 
       await authenticate(res, ()=>{})
+     //  const store = useWritable()
+     //  console.log('store',store)
+     // return store.set(res)
 
       await Router.push(`/public/${res.username}`)
     } catch (err) {
       setValues({...values, loading: false})
       return flash(err.message, 'danger')
     }
-
   }
 
   const handleChange = name => e => {
@@ -89,6 +95,22 @@ const Login = () => {
       </section>
     </Layout>
   )
+}
+
+export async function getServerSideProps({req}) {
+  const cookies = parseCookies(req)
+  if (cookies.token) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      }
+    }
+  } else {
+    return {
+      props: {}
+    }
+  }
 }
 
 export default Login

@@ -1,7 +1,5 @@
 import {useState, useEffect} from 'react'
-import {authenticate, isAuth} from '../../actions/auth'
 import Link from 'next/link'
-import Router from 'next/router'
 import {api} from '../../actions/api'
 
 const RegisterComponent = () => {
@@ -16,10 +14,6 @@ const RegisterComponent = () => {
   })
 
   const {name, email, password, loading, showForm, message, showMessage} = values
-
-  useEffect(() => {
-    isAuth() && Router.push(`/`)
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();

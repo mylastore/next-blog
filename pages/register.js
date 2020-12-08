@@ -1,5 +1,6 @@
 import RegisterComponent from '../components/auth/RegisterComponent'
 import Layout from '../components/Layout'
+import parseCookies from "../helpers/parseCookies";
 
 const Register = () => {
   return (
@@ -11,9 +12,24 @@ const Register = () => {
           </div>
         </div>
       </section>
-
     </Layout>
   )
+}
+
+export async function getServerSideProps({req}) {
+  const cookies = parseCookies(req)
+  if (cookies.token) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      }
+    }
+  } else {
+    return {
+      props: {}
+    }
+  }
 }
 
 export default Register

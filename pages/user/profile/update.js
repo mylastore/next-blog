@@ -1,17 +1,17 @@
 import Layout from "../../../components/Layout"
 import UserComponent from "../../../components/user/UserComponent"
 import {useEffect, useState} from "react"
-import {authenticate, getCookie,getCookieAsJSON, isAuth} from "../../../actions/auth"
+import {getCookieAsJSON, updateCookie} from "../../../actions/auth"
 import {api} from "../../../actions/api"
+import parseCookies from "../../../helpers/parseCookies"
+import { useRouter } from 'next/router'
 
-const updateProfile = () => {
-  let currentUser
+const updateProfile = ({token}) => {
+  const router = useRouter()
 
-  if (process.browser){
-    currentUser = isAuth()
-  }
-
-  //const user = getCookieAsJSON('rememberMe')
+  const [user, setUser] = useState(()=>{
+    getCookieAsJSON('rememberMe')
+  })
 
   const[passwordValues, setPasswordState] = useState({
     password: '',
@@ -34,18 +34,27 @@ const updateProfile = () => {
   const {username, name, email, about, location, website} = values
 
   useEffect(() => {
-    (async ()=>{
-      await getUser()
-    })()
+    const authUser = getCookieAsJSON('rememberMe')
+    if(authUser){
+      setUser(authUser)
+    }
   }, [])
+
+  useEffect(() => {
+      (async ()=>{
+        if(user){
+          await getUser()
+        }
+      })()
+  }, [user])
 
   const getUser = async () => {
     try{
-      const res = await api('GET', `user/profile/${currentUser.username}`, {}, getCookie('token'))
+      const res = await api('GET', `user/profile/${user.username}`, {}, token)
       if(res.status >= 400){
         return flash(res.message, 'danger')
       }
-      setValues({
+      return setValues({
         ...values,
         username: res.username,
         name: res.name,
@@ -55,8 +64,6 @@ const updateProfile = () => {
         avatar: res.avatar,
         about: res.about
       })
-      //return authenticate(res, () => {})
-
     }catch(err){
       return flash(err.message, 'danger')
     }
@@ -68,11 +75,10 @@ const updateProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const currentUserName = isAuth().username
-    const userData = { username, name, email, about, location, website }
+       const userData = { username, name, email, about, location, website }
 
     try{
-      const res = await api('PATCH', `user/account/${currentUserName}`, userData, getCookie('token'))
+      const res = await api('PATCH', `user/account/${user.username}`, userData, token)
       if(res.status >= 400){
         window.scrollTo(500, 0);
         return flash(res.message, 'danger')
@@ -88,6 +94,15 @@ const updateProfile = () => {
         location: res.location,
         about: res.about
       })
+      const newData = {
+        username: res.username,
+        name: res.name,
+        email: res.email,
+        _id: res._id,
+        avatar: res.avatar,
+        role: res.role
+      }
+      return await updateCookie('rememberMe', newData)
     }catch(err){
       window.scrollTo(500, 0);
       return flash(err.message, 'danger')
@@ -98,11 +113,11 @@ const updateProfile = () => {
   const passwordSubmit = async (e) => {
     e.preventDefault()
     const data = {
-      _id: isAuth()._id,
+      _id: user._id,
       password
     }
     try{
-      const res = await api('POST', 'user/update-password', data, getCookie('token'))
+      const res = await api('POST', 'user/update-password', data, token)
       if(res.status !== 200){
         return flash(res.message, 'warning' )
       }
@@ -211,6 +226,27 @@ const updateProfile = () => {
       </section>
     </Layout>
   )
+}
+
+export async function getServerSideProps({req}) {
+  const cookies = parseCookies(req)
+  if (cookies.token) {
+    return {
+      props: {
+        token: cookies.token
+      }
+    }
+  } else {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/login',
+      },
+      props: {
+        token: null
+      }
+    }
+  }
 }
 
 export default updateProfile

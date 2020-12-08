@@ -1,4 +1,4 @@
-import cookie from 'js-cookie'
+import Cookies from 'js-cookie'
 
 // export const handleSession = (res) => {
 //   if (res.status === 440) {
@@ -10,51 +10,54 @@ import cookie from 'js-cookie'
 //   }
 // }
 
-export const logout = () => {
-  removeCookie('token')
-  removeCookie('rememberMe')
+export const logout = async () => {
+  await removeCookie('token')
+  await removeCookie('rememberMe')
+}
+
+export const updateCookie = async (key, value) => {
+  if (process.browser) {
+    await Cookies.remove(key)
+    await Cookies.set(key, value, {expires: 7})
+  }
 }
 
 export const setCookie = async (key, value) => {
   if (process.browser) {
-    await cookie.set(key, value, {expires: 7})
+    await Cookies.set(key, value, {expires: 7})
   }
 }
 
-export const removeCookie = (key) => {
+export const removeCookie = async (key) => {
   if (process.browser) {
-    cookie.remove(key)
+    await Cookies.remove(key)
   }
 }
 
 export const getCookie = (key) => {
   if (process.browser) {
-    return cookie.get(key)
+    return Cookies.get(key)
   }
 }
 
 export const getCookieAsJSON = (key) => {
   if (process.browser) {
-    return cookie.getJSON(key)
+    return Cookies.getJSON(key)
   }
 }
 
 export const authenticate = async (data, next) => {
   await setCookie('token', data.token)
-
   delete data['token']
   await setCookie('rememberMe', data)
   return next()
-
-
 }
 
 export const isAuth = () => {
   if (process.browser) {
     if (getCookie('token')) {
-      if (getCookie('rememberMe')) {
-        return getCookieAsJSON('rememberMe')
-      }
+      const user = getCookieAsJSON('rememberMe')
+      return user
     }
     return false
   }
