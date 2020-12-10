@@ -1,14 +1,14 @@
 import Cookies from 'js-cookie'
 
-// export const handleSession = (res) => {
-//   if (res.status === 440) {
-//     flash('Session has expired.', 'danger')
-//     logout()
-//     setTimeout(()=>{
-//       window.location.replace('/')
-//     }, 1000)
-//   }
-// }
+export const handleSession = async (res) => {
+  if (res.status === 440) {
+    flash('Session has expired.', 'danger')
+    await logout()
+    setTimeout(()=>{
+      window.location.replace('/')
+    }, 1000)
+  }
+}
 
 export const logout = async () => {
   await removeCookie('token')
@@ -47,9 +47,7 @@ export const getCookieAsJSON = (key) => {
 }
 
 export const authenticate = async (data, next) => {
-  await setCookie('token', data.token)
-  delete data['token']
-  await setCookie('rememberMe', data)
+  await setCookie('token', data.token, {expires: 7, sameSite: 'strict'})
   return next()
 }
 

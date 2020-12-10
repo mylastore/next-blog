@@ -1,6 +1,7 @@
 import Layout from "../../components/Layout"
 import {useState} from 'react'
 import {api} from '../../actions/api'
+import parseCookies from "../../helpers/parseCookies";
 
 const forgotPassword = () => {
 
@@ -53,6 +54,23 @@ const forgotPassword = () => {
     </Layout>
   )
 
+}
+
+export async function getServerSideProps({req}) {
+  const cookies = parseCookies(req)
+  if (cookies.token) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/login',
+      },
+      props: {}
+    }
+  } else {
+    return {
+      props: {}
+    }
+  }
 }
 
 export default forgotPassword

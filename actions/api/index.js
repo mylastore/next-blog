@@ -1,6 +1,6 @@
 import fetch from "isomorphic-fetch"
 import {API} from "../../config"
-// import {handleSession} from "../auth"
+import {handleSession} from "../auth"
 
 export const apiForm = (method, path, data, token) => {
   return fetch(`${API}/${path}`, {
@@ -11,8 +11,8 @@ export const apiForm = (method, path, data, token) => {
     },
     body: data
     })
-    .then(res => {
-      handleSession(res)
+    .then(async (res) =>{
+     await handleSession(res)
       return res.json();
     })
     .catch((err) => {
@@ -33,8 +33,8 @@ export const api = (method, path, data, token) => {
         ...(token ? {Authorization: `Bearer ${token}`} : {})
       },
     })
-      .then(res => {
-        // handleSession(res)
+      .then(async (res) => {
+        await handleSession(res)
         return res.json()
       })
       .catch((err) => {
@@ -53,10 +53,9 @@ export const api = (method, path, data, token) => {
       },
       body: JSON.stringify(data)
     })
-      .then(res => {
-        // handleSession(res)
+      .then(async (res) => {
+        await handleSession(res)
         return res.json();
-
       })
       .catch((err) => {
         return  {

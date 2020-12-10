@@ -1,17 +1,12 @@
 import Layout from "../../../components/Layout"
 import UserComponent from "../../../components/user/UserComponent"
-import {useEffect, useState} from "react"
-import {getCookieAsJSON, updateCookie} from "../../../actions/auth"
+import {useContext, useEffect, useState} from "react"
 import {api} from "../../../actions/api"
 import parseCookies from "../../../helpers/parseCookies"
-import { useRouter } from 'next/router'
+import {UserContext} from "../../../components/context/UserContext";
 
 const updateProfile = ({token}) => {
-  const router = useRouter()
-
-  const [user, setUser] = useState(()=>{
-    getCookieAsJSON('rememberMe')
-  })
+  const {user, setUser} = useContext(UserContext)
 
   const[passwordValues, setPasswordState] = useState({
     password: '',
@@ -32,13 +27,6 @@ const updateProfile = ({token}) => {
   })
 
   const {username, name, email, about, location, website} = values
-
-  useEffect(() => {
-    const authUser = getCookieAsJSON('rememberMe')
-    if(authUser){
-      setUser(authUser)
-    }
-  }, [])
 
   useEffect(() => {
       (async ()=>{
@@ -102,7 +90,7 @@ const updateProfile = ({token}) => {
         avatar: res.avatar,
         role: res.role
       }
-      return await updateCookie('rememberMe', newData)
+      return setUser(newData)
     }catch(err){
       window.scrollTo(500, 0);
       return flash(err.message, 'danger')
@@ -147,7 +135,7 @@ const updateProfile = ({token}) => {
         <label className="text-muted">Username</label>
         <input onChange={handleChange('username')} type="text" value={username} className="form-control" />
         <small id="usernameHelp" className="form-text text-muted">
-          Password minimum length 8, must have 1 capital letter, 1 number and 1 special character.
+          Username must be unique, no spaces. Camelcase is acceptable.
         </small>
       </div>
       <div className="form-group">

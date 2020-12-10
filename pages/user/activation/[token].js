@@ -3,6 +3,7 @@ import Layout from "../../../components/Layout"
 import {withRouter} from "next/router"
 import jwt from 'jsonwebtoken'
 import {useEffect, useState} from "react"
+import parseCookies from "../../../helpers/parseCookies";
 
 const userActivation = ({router}) => {
   const [values, setValues] = useState({
@@ -66,6 +67,23 @@ const userActivation = ({router}) => {
     </Layout>
   )
 
+}
+
+export async function getServerSideProps({req}) {
+  const cookies = parseCookies(req)
+  if (cookies.token) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/login',
+      },
+      props: {}
+    }
+  } else {
+    return {
+      props: {}
+    }
+  }
 }
 
 export default withRouter(userActivation)

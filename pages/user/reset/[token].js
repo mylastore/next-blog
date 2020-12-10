@@ -2,6 +2,7 @@ import {useState} from 'react'
 import {api} from "../../../actions/api"
 import Layout from "../../../components/Layout"
 import {withRouter} from "next/router"
+import parseCookies from "../../../helpers/parseCookies";
 
 const resetPassword = ({router}) => {
   const [values, setValues] = useState({
@@ -25,7 +26,7 @@ const resetPassword = ({router}) => {
       }
       setValues({...values, password: '', passwordConfirm: ''})
       setTimeout(() => {
-        return flash('Success! Please login.')
+        return flash('Success! Please login.', 'success')
       }, 500)
     }catch (err){
       return flash(err.message, 'danger')
@@ -39,7 +40,6 @@ const resetPassword = ({router}) => {
       isMatch = value === password
     }
     setValues({...values, [name]: value, match: isMatch})
-
   }
 
   const resetPasswordForm = () => (
@@ -76,6 +76,23 @@ const resetPassword = ({router}) => {
     </Layout>
   )
 
+}
+
+export async function getServerSideProps({req}) {
+  const cookies = parseCookies(req)
+  if (cookies.token) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/login',
+      },
+      props: {}
+    }
+  } else {
+    return {
+      props: {}
+    }
+  }
 }
 
 export default withRouter(resetPassword)

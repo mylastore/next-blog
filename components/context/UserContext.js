@@ -1,27 +1,26 @@
-import React, {createContext, useContext, useState} from 'react'
-export const UserContext = createContext(undefined)
+import React, {createContext, useState, useEffect} from "react"
+import {getCookie, setCookie} from "../../actions/auth";
 
-const UserContextProvider = (props) => {
-  const [user, setUser] = useState()
-  const storeUser = user => {
-    setUser({
-      name: user.name,
-      role: user.role,
-      username: user.username,
-      _id: user._id,
-      createdAt: user.createdAt,
-      avatar: user.avatar
-    })
-  }
-  const logout = () => {
-    setUser({})
-  }
+export const UserContext = createContext()
 
-  return (
-    <UserContext.Provider value={{user, storeUser}}>
+export const UserContextProvider = (props) => {
+  const [user, setUser] = useState(()=>{
+    const localData = getCookie('rememberMe');
+    return localData ? JSON.parse(localData) : null;
+  })
+
+  useEffect(() => {
+    (async () => {
+      await setCookie('rememberMe', JSON.stringify(user), {expires: 7, sameSite: 'strict'});
+    })()
+  }, [user]);
+
+  return(
+    <UserContext.Provider value={{user, setUser}}>
       {props.children}
     </UserContext.Provider>
   )
+
 }
 
 export default UserContextProvider

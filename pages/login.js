@@ -1,15 +1,16 @@
 import Layout from "../components/Layout"
-import {useEffect, useState} from 'react'
+import {useContext, useEffect, useState} from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
 import {api} from '../actions/api'
 import GoogleLoginComponent from "../components/auth/GoogleLoginComponent"
 import {authenticate} from '../actions/auth'
 import parseCookies from "../helpers/parseCookies"
-import {useWritable} from "../stores/userData"
+import {UserContext} from "../components/context/UserContext";
+
 
 const Login = () => {
-
+ const {setUser} = useContext(UserContext)
 
   const [values, setValues] = useState({
     email: 'me@me.com',
@@ -34,9 +35,8 @@ const Login = () => {
       setValues({...values, email: '', password: '', loading: false})
 
       await authenticate(res, ()=>{})
-     //  const store = useWritable()
-     //  console.log('store',store)
-     // return store.set(res)
+      delete res['token']
+      setUser(res)
 
       await Router.push(`/public/${res.username}`)
     } catch (err) {

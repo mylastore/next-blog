@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useContext, useState} from 'react'
 import {APP_NAME} from '../config'
 import Link from 'next/link'
 import {logout} from '../actions/auth'
@@ -17,28 +17,16 @@ import {
 } from 'reactstrap'
 import Router from 'next/router'
 import nprogress from 'nprogress'
-import {getCookieAsJSON} from "../actions/auth"
-import {useWritable} from "../stores/userData"
+import {UserContext} from "./context/UserContext";
 
 Router.onRouteChangeStart = url => nprogress.start()
 Router.onRouteChangeComplete = url => nprogress.done()
 Router.onRouteError = url => nprogress.done()
 
 const DefaultNav = () => {
-
-  const [user, setUser] = useState(() => {
-      getCookieAsJSON('rememberMe')
-    }
-  )
+  const {user, setUser} = useContext(UserContext)
   const [isOpen, setIsOpen] = useState(false)
   const toggle = () => setIsOpen(!isOpen)
-
-  useEffect(() => {
-    const authUser = getCookieAsJSON('rememberMe')
-    if (authUser) {
-      setUser(authUser)
-    }
-  }, [])
 
   async function userLogout() {
     try {
@@ -46,6 +34,7 @@ const DefaultNav = () => {
       if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
+      setUser(null)
       await logout()
       await Router.push(`/login`)
     } catch (err) {
