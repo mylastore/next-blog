@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
-import {getCookie, isAuth} from "../../actions/auth"
-import {api} from '../../actions/api'
-import style from '../../styles/Admin.module.css'
+import {getCookie, isAuth} from "../../../actions/auth"
+import {api} from '../../../actions/api'
+import style from '../../../styles/Admin.module.css'
 import Link from "next/link"
 
 const AllBlogs = () => {
@@ -16,22 +16,11 @@ const AllBlogs = () => {
   }, [])
 
   const updateButton = b => {
-    if (isAuth() && isAuth().role === 'user') {
       return (
-        <Link href={`/user/${b.slug}`}>
+        <Link href={`/user/blog/update/${b.slug}`}>
           <a className="btn btn-sm btn-outline-success">Update</a>
         </Link>
       )
-    } else if (isAuth() && isAuth().role === 'admin') {
-      return (
-        <Link href={`/admin/${b.slug}`}>
-          <a className="btn btn-sm btn-outline-success">Update</a>
-        </Link>
-      )
-    } else {
-      return (<div> </div>)
-    }
-
   }
 
   const loadBlogs = async () => {

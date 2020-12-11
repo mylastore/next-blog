@@ -1,7 +1,7 @@
 import Link from "next/link"
-import timeAgo from "../../helpers/timeAgo"
-import {IMG} from '../../config'
-import style from '../../styles/card.module.css'
+import timeAgo from "../../../helpers/timeAgo"
+import {IMG} from '../../../config'
+import style from '../../../styles/card.module.css'
 import Image from 'next/image'
 
 const SmallCard = ({b}) => {

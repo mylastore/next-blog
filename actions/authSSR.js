@@ -1,31 +1,25 @@
 import {api} from './api'
-import {Cookies} from 'react-cookie'
-
-const cookies = new Cookies()
-
-export async function handleAuthSSR(req, res, next) {
-  let token
-console.log('handleAuthSSR')
+import parseCookies from "../helpers/parseCookies";
+export default async function handleAuthSSR(req) {
+  const cookies = parseCookies(req)
   if (req) {
-    token = req.headers.cookie ? req.headers.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1") : cookies.get('token')
-  }
-
-  try {
-    const isAuth = await api('GET', "auth", {}, token)
+    const isAuth = await api('GET', "auth", {}, cookies.token)
     if(isAuth.status === 401){
-      new Error('Not authorized')
-      await res.writeHead(302, {
-        Location: '/'
-      })
-      await res.end()
-    }
-  } catch (err) {
-    console.log('err? ',err)
-    if (res) {
-      await res.writeHead(302, {
-        Location: '/'
-      })
-      await res.end()
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/user/login',
+        },
+        props: {
+          token: null
+        }
+      }
+    } else{
+      return {
+        props: {
+          token: cookies.token
+        }
+      }
     }
   }
 

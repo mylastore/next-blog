@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {api} from '../actions/api'
 import Layout from "../components/Layout"
-import parseCookies from '../helpers/parseCookies'
+import handleAuthSSR from '../actions/authSSR'
 
 const secretPage = ({token}) => {
   const [ping, setPing] = useState('Ping')
@@ -30,26 +30,8 @@ const secretPage = ({token}) => {
   )
 }
 
-
 export async function getServerSideProps({req}) {
-  const cookies = parseCookies(req)
-  if (cookies.token) {
-    return {
-      props: {
-        token: cookies.token
-      }
-    }
-  } else {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/login',
-      },
-      props: {
-        token: null
-      }
-    }
-  }
+  return await handleAuthSSR(req)
 }
 
 export default secretPage

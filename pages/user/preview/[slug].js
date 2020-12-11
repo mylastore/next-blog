@@ -2,12 +2,14 @@ import Layout from '../../../components/Layout'
 import {api} from '../../../actions/api'
 import {IMG} from "../../../config"
 import {dateFormat} from "../../../helpers/dateFormat"
-import {showCategories, showTags} from "../../../components/blog/CatsAndTags"
+import {showCategories, showTags} from "../../../components/auth/blog/CatsAndTags"
 import styles from '../../../styles/blog.module.css'
 
 import Link from 'next/link'
 import Image from 'next/image'
 import {getCookie} from "../../../actions/auth";
+import AuthComponent from "../../../components/auth/AuthComponent";
+import parseCookies from "../../../helpers/parseCookies";
 
 const blogPreview = ({b, message}) => {
 
@@ -24,15 +26,11 @@ const blogPreview = ({b, message}) => {
       :
       <Layout>
         <article>
-          <div className="container">
+          <div className="container-fluid">
+            <AuthComponent>
             <section>
               <div className="clearfix">
                 <h1 className={'float-left'}>Blog Preview</h1>
-
-              <Link href={'/admin/blog'}>
-                <a className="float-right btn btn-primary">Go Back</a>
-              </Link>
-
               </div>
               <hr/>
               <h1><strong>{b.title}</strong></h1>
@@ -60,7 +58,9 @@ const blogPreview = ({b, message}) => {
             <section>
               <div className={styles.editorImg} dangerouslySetInnerHTML={{__html: b.content}}/>
             </section>
+            </AuthComponent>
           </div>
+
           <style jsx>{`
         .center {
           margin: auto;
@@ -73,14 +73,38 @@ const blogPreview = ({b, message}) => {
   )
 }
 
-export async function getServerSideProps({query}) {
+export async function getServerSideProps({query, req}) {
+  const cookies = parseCookies(req)
+  const token = cookies.token
+  if(!token){
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/user/login',
+      },
+      props: {
+        token: null
+      }
+    }
+  }
   try {
-    const res = await api('GET', `getblog/${query.slug}`, getCookie('token'))
+    const res = await api('GET', `getblog/${query.slug}`, token)
     if (!res) {
       return {
         props: {
           b: 'error',
           message: 'Oops! Something is wrong. Try later'
+        }
+      }
+    }
+    if(res.status === 401){
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/login',
+        },
+        props: {
+          token: null
         }
       }
     }

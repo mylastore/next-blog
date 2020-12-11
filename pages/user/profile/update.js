@@ -1,9 +1,9 @@
 import Layout from "../../../components/Layout"
-import UserComponent from "../../../components/user/UserComponent"
 import {useContext, useEffect, useState} from "react"
 import {api} from "../../../actions/api"
-import parseCookies from "../../../helpers/parseCookies"
 import {UserContext} from "../../../components/context/UserContext";
+import AuthComponent from "../../../components/auth/AuthComponent";
+import handleAuthSSR from "../../../actions/authSSR";
 
 const updateProfile = ({token}) => {
   const {user, setUser} = useContext(UserContext)
@@ -198,7 +198,7 @@ const updateProfile = ({token}) => {
     <Layout>
       <section>
         <div className="container-fluid">
-          <UserComponent>
+          <AuthComponent>
             <h2>User Update</h2>
             <div className="row">
               <div className="col-md-8">
@@ -209,7 +209,7 @@ const updateProfile = ({token}) => {
               </div>
             </div>
 
-          </UserComponent>
+          </AuthComponent>
         </div>
       </section>
     </Layout>
@@ -217,24 +217,7 @@ const updateProfile = ({token}) => {
 }
 
 export async function getServerSideProps({req}) {
-  const cookies = parseCookies(req)
-  if (cookies.token) {
-    return {
-      props: {
-        token: cookies.token
-      }
-    }
-  } else {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/login',
-      },
-      props: {
-        token: null
-      }
-    }
-  }
+  return await handleAuthSSR(req)
 }
 
 export default updateProfile

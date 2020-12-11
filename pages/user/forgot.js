@@ -1,10 +1,9 @@
 import Layout from "../../components/Layout"
 import {useState} from 'react'
 import {api} from '../../actions/api'
-import parseCookies from "../../helpers/parseCookies";
+import isAuth from "../../actions/isAuth";
 
 const forgotPassword = () => {
-
   const [values, setValues] = useState({
     email: ''
   })
@@ -57,20 +56,7 @@ const forgotPassword = () => {
 }
 
 export async function getServerSideProps({req}) {
-  const cookies = parseCookies(req)
-  if (cookies.token) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/login',
-      },
-      props: {}
-    }
-  } else {
-    return {
-      props: {}
-    }
-  }
+  return await isAuth(req)
 }
 
 export default forgotPassword

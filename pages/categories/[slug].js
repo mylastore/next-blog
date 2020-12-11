@@ -1,6 +1,6 @@
 import Layout from "../../components/Layout"
 import {api} from '../../actions/api'
-import Card from "../../components/blog/Card"
+import Card from "../../components/auth/blog/Card"
 import Head from "next/head"
 import {APP_NAME, DOMAIN, FACEBOOK_ID, IMG} from "../../config"
 

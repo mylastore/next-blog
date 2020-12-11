@@ -1,17 +1,15 @@
-import React, {useState, useEffect} from 'react'
-import {withRouter} from 'next/router'
-import {getCookie} from '../../actions/auth'
-import dynamic from "next/dynamic"
-import {api, apiForm} from '../../actions/api'
-import {IMG} from '../../config'
-
-const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
+import Layout from "../../../../components/Layout"
+import AuthComponent from "../../../../components/auth/AuthComponent"
+import handleAuthSSR from "../../../../actions/authSSR"
+import {withRouter} from "next/router"
+import React, {useEffect, useState} from "react"
+import {api, apiForm} from "../../../../actions/api"
+import {IMG} from "../../../../config"
 import 'suneditor/dist/css/suneditor.min.css'
+import dynamic from "next/dynamic"
+const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
 
-let imgInput
-
-const UpdateBlogComponent = ({router}) => {
-
+const UpdateBlog = ({router, token}) => {
   const [visibility, setVisibility] = useState(false)
   const [editorContent, setEditorContent] = useState('')
   const [categories, setCategories] = useState([])
@@ -30,7 +28,7 @@ const UpdateBlogComponent = ({router}) => {
   useEffect(() => {
 
     (async () => {
-      imgInput = document.getElementById('img-input')
+      //imgInput = document.getElementById('img-input')
 
       await initBlog()
       await initCategories()
@@ -186,7 +184,7 @@ const UpdateBlogComponent = ({router}) => {
   const updateBlog = async e => {
     e.preventDefault()
     try {
-      const res = await apiForm('PATCH', `blog/${router.query.slug}`, formData, getCookie('token'))
+      const res = await apiForm('PATCH', `blog/${router.query.slug}`, formData, token)
       if (res.status >= 400) {
         return flash(res.message)
       }
@@ -200,8 +198,8 @@ const UpdateBlogComponent = ({router}) => {
   const handleImageUploadBefore = (files, info, uploadHandler) => {
     const formData = new FormData()
     formData.append('avatar', files[0])
-    apiForm('POST', 'blog/images', formData, getCookie('token'))
-      .then((res)=>{
+    apiForm('POST', 'blog/images', formData, token)
+      .then((res) => {
         if (res && res.status >= 400) {
           uploadHandler()
           return flash(res.message)
@@ -247,7 +245,7 @@ const UpdateBlogComponent = ({router}) => {
 
   const deleteImage = async () => {
     try {
-      const res = await api('POST', `blogs/delete-img/${router.query.slug}`, {imgID}, getCookie('token'))
+      const res = await api('POST', `blogs/delete-img/${router.query.slug}`, {imgID}, token)
       if (res.status >= 400) {
         return flash(res.message)
       }
@@ -260,40 +258,42 @@ const UpdateBlogComponent = ({router}) => {
 
   return (
     visibility &&
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-md-8">
-          {blogForm()}
-        </div>
-        <div className="col-md-4">
-          <h5>Categories</h5>
-          <ul className='scroll'>{showCategories()}</ul>
-          <hr/>
-          <h5>Tags</h5>
-          <ul className='scroll'>{showTags()}</ul>
-          <hr/>
-          <h5>Feature Image</h5>
-          <p><small className="text-muted">Max size 5mb</small></p>
-          <label className="btn btn-outline-info">
-            Upload Image
-            <input id="img-input" onChange={handleChange('avatar')} type="file" name="avatar"
-                   accept="image/png, image/jpeg" hidden/>
-          </label>
-          {`${IMG}/${avatar}` === `${IMG}/seo-default.webp` ? (
-            <img id="output" alt="image-preview" src={`${IMG}/${avatar}`}
-                 style={{width: '70px', height: 'auto', display: 'block'}}/>
-          ) : (
-            <div>
-              <img id="output" alt="image-preview" src={`${IMG}/${avatar}`}
-                   style={{width: '70px', height: 'auto', display: 'block'}}/>
-              <br/>
-              <button onClick={deleteImage} className="btn btn-danger btn-sm">DELETE</button>
+    <Layout>
+      <AuthComponent>
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-md-8">
+              {blogForm()}
             </div>
-          )
-          }
-        </div>
-      </div>
-      <style jsx>{`
+            <div className="col-md-4">
+              <h5>Categories</h5>
+              <ul className='scroll'>{showCategories()}</ul>
+              <hr/>
+              <h5>Tags</h5>
+              <ul className='scroll'>{showTags()}</ul>
+              <hr/>
+              <h5>Feature Image</h5>
+              <p><small className="text-muted">Max size 5mb</small></p>
+              <label className="btn btn-outline-info">
+                Upload Image
+                <input id="img-input" onChange={handleChange('avatar')} type="file" name="avatar"
+                       accept="image/png, image/jpeg" hidden/>
+              </label>
+              {`${IMG}/${avatar}` === `${IMG}/seo-default.webp` ? (
+                <img id="output" alt="image-preview" src={`${IMG}/${avatar}`}
+                     style={{width: '70px', height: 'auto', display: 'block'}}/>
+              ) : (
+                <div>
+                  <img id="output" alt="image-preview" src={`${IMG}/${avatar}`}
+                       style={{width: '70px', height: 'auto', display: 'block'}}/>
+                  <br/>
+                  <button onClick={deleteImage} className="btn btn-danger btn-sm">DELETE</button>
+                </div>
+              )
+              }
+            </div>
+          </div>
+          <style jsx>{`
         .scroll{
           max-height: 200px;
           overflow-y: auto;
@@ -303,9 +303,15 @@ const UpdateBlogComponent = ({router}) => {
           cursor: pointer;
         }
       `}</style>
-    </div>
-
+        </div>
+      </AuthComponent>
+    </Layout>
   )
+
 }
 
-export default withRouter(UpdateBlogComponent)
+export async function getServerSideProps({req}) {
+  return await handleAuthSSR(req)
+}
+
+export default withRouter(UpdateBlog)

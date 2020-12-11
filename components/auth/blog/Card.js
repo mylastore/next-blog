@@ -1,9 +1,9 @@
 import Link from "next/link"
-import {IMG} from '../../config'
-import style from '../../styles/card.module.css'
+import {IMG} from '../../../config'
+import style from '../../../styles/card.module.css'
 import {showTags, showCategories} from "./CatsAndTags"
 import Image from 'next/image'
-import timeAgo from "../../helpers/timeAgo"
+import timeAgo from "../../../helpers/timeAgo"
 
 const Card = ({b}) => {
   return (

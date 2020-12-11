@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import {getCookie} from '../../actions/auth'
-import {api} from '../../actions/api'
+import {api} from '../../../actions/api'
+import Layout from "../../../components/Layout";
+import AuthComponent from "../../../components/auth/AuthComponent";
+import handleAuthSSR from "../../../actions/authSSR";
 
-const Tag = () => {
+const Tag = ({token}) => {
   const [visibility, setVisibility] = useState(false)
   const [values, setValues] = useState({
     name: '',
@@ -12,7 +14,6 @@ const Tag = () => {
   });
 
   const { name, tags, reload, gotTags } = values;
-  const token = getCookie('token');
 
   useEffect(() => {
     (async ()=> {
@@ -107,13 +108,21 @@ const Tag = () => {
 
   return (
     visibility &&
-    <>
-      <div>
+    <Layout>
+      <section>
+        <div className="container-fluid">
+          <AuthComponent>
         {newTagFom()}
         {showTags()}
-      </div>
-    </>
-  );
-};
+          </AuthComponent>
+        </div>
+      </section>
+    </Layout>
+  )
+}
+
+export async function getServerSideProps({req}) {
+  return await handleAuthSSR(req)
+}
 
 export default Tag;

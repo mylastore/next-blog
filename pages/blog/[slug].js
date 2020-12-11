@@ -3,9 +3,9 @@ import Head from 'next/head'
 import {api} from '../../actions/api'
 import {IMG, DOMAIN, APP_NAME, FACEBOOK_ID} from "../../config"
 import timeAgo from "../../helpers/timeAgo"
-import {showCategories, showTags} from "../../components/blog/CatsAndTags"
+import {showCategories, showTags} from "../../components/auth/blog/CatsAndTags"
 import {useState, useEffect} from 'react'
-import SmallCard from "../../components/blog/SmallCard"
+import SmallCard from "../../components/auth/blog/SmallCard"
 import styles from '../../styles/blog.module.css'
 import DisqusThread from "../../components/DisqusThread"
 import Link from 'next/link'

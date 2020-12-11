@@ -1,13 +1,12 @@
-import Layout from "../components/Layout"
-import {useContext, useEffect, useState} from 'react'
+import Layout from "../../components/Layout"
+import {useContext, useState} from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
-import {api} from '../actions/api'
-import GoogleLoginComponent from "../components/auth/GoogleLoginComponent"
-import {authenticate} from '../actions/auth'
-import parseCookies from "../helpers/parseCookies"
-import {UserContext} from "../components/context/UserContext";
-
+import {api} from '../../actions/api'
+import GoogleLoginComponent from "../../components/auth/GoogleLoginComponent"
+import {authenticate} from '../../actions/auth'
+import {UserContext} from "../../components/context/UserContext";
+import isAuth from "../../actions/isAuth";
 
 const Login = () => {
  const {setUser} = useContext(UserContext)
@@ -33,11 +32,9 @@ const Login = () => {
         return flash(res.message, 'danger')
       }
       setValues({...values, email: '', password: '', loading: false})
-
       await authenticate(res, ()=>{})
       delete res['token']
       setUser(res)
-
       await Router.push(`/public/${res.username}`)
     } catch (err) {
       setValues({...values, loading: false})
@@ -71,7 +68,7 @@ const Login = () => {
         </form>
         <p className="clearfix">&nbsp;</p>
         <small id="emailHelp" className="form-text text-center text-muted">
-          Don't have an account? Please <Link href="/register"><a>register.</a></Link></small>
+          Don't have an account? Please <Link href="/user/register"><a>register.</a></Link></small>
       </div>
     )
   }
@@ -98,19 +95,8 @@ const Login = () => {
 }
 
 export async function getServerSideProps({req}) {
-  const cookies = parseCookies(req)
-  if (cookies.token) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/',
-      }
-    }
-  } else {
-    return {
-      props: {}
-    }
-  }
+  //checks if user is login
+  return await isAuth(req)
 }
 
 export default Login

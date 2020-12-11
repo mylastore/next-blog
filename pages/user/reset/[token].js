@@ -2,7 +2,7 @@ import {useState} from 'react'
 import {api} from "../../../actions/api"
 import Layout from "../../../components/Layout"
 import {withRouter} from "next/router"
-import parseCookies from "../../../helpers/parseCookies";
+import isAuth from "../../../actions/isAuth";
 
 const resetPassword = ({router}) => {
   const [values, setValues] = useState({
@@ -79,20 +79,8 @@ const resetPassword = ({router}) => {
 }
 
 export async function getServerSideProps({req}) {
-  const cookies = parseCookies(req)
-  if (cookies.token) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/login',
-      },
-      props: {}
-    }
-  } else {
-    return {
-      props: {}
-    }
-  }
+  //checks if user is login
+  return await isAuth(req)
 }
 
 export default withRouter(resetPassword)

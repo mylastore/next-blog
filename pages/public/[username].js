@@ -8,7 +8,6 @@ import {APP_NAME, DOMAIN, FACEBOOK_ID} from "../../config";
 import AuthorEmailComponent from "../../components/forms/AuthorEmailComponent"
 import {isAuth} from "../../actions/auth"
 
-
 const publicUserProfile = ({data, message}) => {
 
   let currentUser
@@ -78,16 +77,11 @@ const publicUserProfile = ({data, message}) => {
                   <span className="small">Member Since </span>
                   <span className="small">{timeAgo(user.createdAt)}</span>
                   <hr/>
-                  {currentUser && user.username && user.role === 'admin' ? (
-                  <Link href={'/admin/profile/update'}>
-                    <button className="btn btn-primary">Update Profile</button>
-                  </Link>
-                  ) : (
+                  {currentUser && user.username && (
                     <Link href={'/user/profile/update'}>
                       <button className="btn btn-primary">Update Profile</button>
                     </Link>
                   )}
-
                 </div>
               </div>
             </div>

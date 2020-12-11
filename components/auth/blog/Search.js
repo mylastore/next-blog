@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {useState} from 'react'
-import {api} from '../../actions/api'
+import {api} from '../../../actions/api'
 
 const Search = () => {
   const [values, setValues] = useState({

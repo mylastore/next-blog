@@ -8,32 +8,32 @@ const AdminNav = (props) => {
     <Nav style={{background: '#F8F9FA', marginBottom: '2em'}} vertical>
       <NavItem>
         <NavItem>
-          <Link href="/admin/blog">
+          <Link href="/user/blog/create-blog">
             <NavLink>
               <div className="btn btn-success btn-block">Create Blog</div>
             </NavLink>
           </Link>
         </NavItem>
-        <Link href="/admin/profile/update">
+        <Link href="/user/profile/update">
           <NavLink>
             Profile
           </NavLink>
         </Link>
       </NavItem>
       <NavItem>
-        <Link href="/admin/categories">
+        <Link href="/user/blog/categories">
           <NavLink>
             Categories
           </NavLink>
         </Link>
       </NavItem>
       <NavItem>
-        <Link href="/admin/tags">
+        <Link href="/user/blog/tags">
           <NavLink>Tags</NavLink>
         </Link>
       </NavItem>
       <NavItem>
-        <Link href="/admin/blogs">
+        <Link href="/user/blog/blogs">
           <NavLink>Blog Management</NavLink>
         </Link>
       </NavItem>

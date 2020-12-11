@@ -1,8 +1,10 @@
 import {useState, useEffect} from 'react'
-import {getCookie} from '../../actions/auth'
-import {api} from '../../actions/api'
+import {api} from '../../../actions/api'
+import Layout from "../../../components/Layout";
+import AuthComponent from "../../../components/auth/AuthComponent";
+import handleAuthSSR from "../../../actions/authSSR";
 
-const Category = () => {
+const Category = ({token}) => {
   const [visibility, setVisibility] = useState(false)
   const [values, setValues] = useState({
     name: '',
@@ -12,7 +14,6 @@ const Category = () => {
   });
 
   const {name, categories, reload, gotCategories} = values;
-  const token = getCookie('token');
 
   useEffect(() => {
     (async () => {
@@ -110,11 +111,21 @@ const Category = () => {
 
   return (
     visibility &&
-    <div>
-      {newCategoryFom()}
-      {showCategories()}
-    </div>
-  );
-};
+    <Layout>
+      <section>
+        <div className="container-fluid">
+          <AuthComponent>
+            {newCategoryFom()}
+            {showCategories()}
+          </AuthComponent>
+        </div>
+      </section>
+    </Layout>
+  )
+}
+
+export async function getServerSideProps({req}) {
+  return await handleAuthSSR(req)
+}
 
 export default Category;

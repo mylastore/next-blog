@@ -1,16 +1,14 @@
-import Layout from "../../components/Layout"
-import UserComponent from '../../components/user/UserComponent'
-import parseCookies from "../../helpers/parseCookies"
+import Layout from "../../../components/Layout"
 import React, {useState, useEffect} from 'react'
 import Router, {withRouter} from 'next/router'
-import dynamic from "next/dynamic"
-import {apiForm, api} from '../../actions/api'
-
-const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
+import {apiForm, api} from '../../../actions/api'
 import 'suneditor/dist/css/suneditor.min.css'
+import handleAuthSSR from "../../../actions/authSSR"
+import AuthComponent from "../../../components/auth/AuthComponent"
+import dynamic from "next/dynamic"
+const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
 
-const Blog = ({token, router}) => {
-  console.log(token)
+const CreateBlog = ({token, router}) => {
   const [visibility, setVisibility] = useState(false)
   const [checkedCat, setCheckedCat] = useState([])
   const [checkedTag, setCheckedTag] = useState([])
@@ -132,7 +130,6 @@ const Blog = ({token, router}) => {
     try {
       const res = await apiForm('POST', 'blog', formData, token)
       if (res.status >= 400) {
-        console.log('res status',res.message)
         return flash(res.message, 'danger')
       }
       setValues({
@@ -142,7 +139,7 @@ const Blog = ({token, router}) => {
         formData: '',
         editorContent: ''
       })
-      await Router.push(`/admin/preview/${res.slug}`)
+      await Router.push(`/user/preview/${res.slug}`)
     } catch (err) {
       return flash(err, 'danger')
     }
@@ -203,12 +200,11 @@ const Blog = ({token, router}) => {
     )
   }
 
-
   return (
     <Layout>
       <section>
         <div className="container-fluid">
-          <UserComponent>
+          <AuthComponent>
             <h2>Create Blog</h2>
             <div className="container-fluid">
               <div className="row">
@@ -244,7 +240,7 @@ const Blog = ({token, router}) => {
 
             </div>
 
-          </UserComponent>
+          </AuthComponent>
         </div>
       </section>
     </Layout>
@@ -252,24 +248,7 @@ const Blog = ({token, router}) => {
 }
 
 export async function getServerSideProps({req}) {
-  const cookies = parseCookies(req)
-  if (cookies.token) {
-    return {
-      props: {
-        token: cookies.token
-      }
-    }
-  } else {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/login',
-      },
-      props: {
-        token: null
-      }
-    }
-  }
+  return await handleAuthSSR(req)
 }
 
-export default withRouter(Blog)
+export default withRouter(CreateBlog)

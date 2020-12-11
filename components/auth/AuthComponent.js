@@ -1,10 +1,10 @@
-import UserNav from "./UserNav"
+import AuthNav from "./AuthNav";
 
-const UserComponent = ({children}) => {
+const AuthComponent = ({children, token}) => {
   return (
     <div className="row">
       <div className="col-md-3">
-        <UserNav/>
+        <AuthNav/>
       </div>
       <div className="col-md-9">
         {children}
@@ -13,4 +13,4 @@ const UserComponent = ({children}) => {
   )
 }
 
-export default UserComponent
+export default AuthComponent

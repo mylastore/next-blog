@@ -36,7 +36,7 @@ const DefaultNav = () => {
       }
       setUser(null)
       await logout()
-      await Router.push(`/login`)
+      await Router.push(`/user/login`)
     } catch (err) {
       return flash(err.message, 'danger')
     }
@@ -66,8 +66,8 @@ const DefaultNav = () => {
             {!user && (
               <>
                 <NavItem>
-                  <Link href="/login">
-                    <NavLink onClick={() => userLogout(() => Router.replace(`/login`))}>Logout</NavLink>
+                  <Link href="/user/login">
+                    <NavLink onClick={() => userLogout(() => Router.replace(`/user/login`))}>Logout</NavLink>
                   </Link>
                 </NavItem>
                 <NavItem>
@@ -76,12 +76,12 @@ const DefaultNav = () => {
                   </Link>
                 </NavItem>
                 <NavItem>
-                  <Link href="/login">
+                  <Link href="/user/login">
                     <NavLink>Login</NavLink>
                   </Link>
                 </NavItem>
                 <NavItem>
-                  <Link href="/register">
+                  <Link href="/user/register">
                     <NavLink>Register</NavLink>
                   </Link>
                 </NavItem>
@@ -95,7 +95,7 @@ const DefaultNav = () => {
                   <i className="fas fa-sort-down"> </i>
                 </DropdownToggle>
                 <DropdownMenu right>
-                  {user && user.role === 'user' && (
+                  {user && (
                     <DropdownItem>
                       <NavItem>
                         <Link href="/user/profile/update">
@@ -104,21 +104,12 @@ const DefaultNav = () => {
                       </NavItem>
                     </DropdownItem>
                   )}
-                  <DropdownItem>
-                    {user.role === 'admin' && (
-                      <NavItem>
-                        <Link href="/admin/blog">
-                          <NavLink>Admin Panel</NavLink>
-                        </Link>
-                      </NavItem>
-                    )}
-                  </DropdownItem>
                   <DropdownItem divider/>
                   <DropdownItem>
                     {user && (
                       <NavItem>
-                        <Link href="/login">
-                          <NavLink onClick={() => userLogout(() => Router.replace(`/login`))}>Logout</NavLink>
+                        <Link href="/user/login">
+                          <NavLink onClick={() => userLogout(() => Router.replace(`user/login`))}>Logout</NavLink>
                         </Link>
                       </NavItem>
                     )}

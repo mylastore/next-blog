@@ -1,6 +1,6 @@
 import DefaultNav from '../components/DefaultNav'
 import Flash from '../components/Flash';
-import Search from './blog/Search'
+import Search from './auth/blog/Search'
 import Link from "next/link"
 
 const Layout = ({children}) => {
