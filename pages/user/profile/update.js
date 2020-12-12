@@ -95,7 +95,6 @@ const updateProfile = ({token}) => {
       window.scrollTo(500, 0);
       return flash(err.message, 'danger')
     }
-
   }
 
   const passwordSubmit = async (e) => {
