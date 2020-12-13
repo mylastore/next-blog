@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Multiuser blogging application created with [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+## List of some technologies used on this project
+
+- Next JS 
+- Bootstrap 4
+- Quill text editor
+- isomorphic-fetch
+and more, see package.json
 
 ## Getting Started
 
@@ -9,14 +17,7 @@ npm i
 
 npm run dev
 
-or
-
-yarn dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
 ## Learn More
 
@@ -33,9 +34,9 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-## Hit Me Up
+## HAVE A QUESTION?
 
-Go ahead and fork the project! Message me here if you have questions or submit an issue if needed. I'll be making touch-ups as time goes on. Have fun with this!
+Go ahead and ask on the GitHub repo "Discussions" section
 
 
 ## License
