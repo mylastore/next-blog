@@ -32,7 +32,6 @@ const singleBlog = ({b, message}) => {
   const [related, setRelated] = useState([])
   const data = {_id: b._id, categories: b.categories}
 
-
   useEffect(() => {
     (async () => {
       await loadRelated()
@@ -40,7 +39,7 @@ const singleBlog = ({b, message}) => {
   }, [])
 
   const loadRelated = async () => {
-    if (b === 'error') {
+    if (await b === 'error') {
       return null
     }
     try {
@@ -92,7 +91,6 @@ const singleBlog = ({b, message}) => {
             <div className="container">
               <section>
                 <h1><strong>{b.title}</strong></h1>
-
                 <div className="center mb-3">
                   <Image
                     className={`${styles.featuredImage} img img-fluid`}
@@ -117,9 +115,11 @@ const singleBlog = ({b, message}) => {
               <section>
                 <div className={styles.editorImg} dangerouslySetInnerHTML={{__html: b.content}}/>
               </section>
+              {b &&
               <section>
                 {showDisqus()}
               </section>
+              }
               {related.length > 0 &&
               <section>
                 <h4>Related Blogs</h4>
@@ -144,8 +144,9 @@ const singleBlog = ({b, message}) => {
 
 export async function getServerSideProps({query}) {
   try {
-    const res = await api('GET', `getblog/${query.slug}`)
-    if (!res) {
+    const response = await api('GET', `getblog/${query.slug}`)
+
+    if (!response) {
       return {
         props: {
           b: 'error',
@@ -153,17 +154,17 @@ export async function getServerSideProps({query}) {
         }
       }
     }
-    if (res.status >= 400) {
+    if (response.status >= 400) {
       return {
         props: {
           b: 'error',
-          message: res.message
+          message: response.message
         }
       }
     }
     return {
       props: {
-        b: res
+        b: response
       }
     }
 

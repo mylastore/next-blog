@@ -38,6 +38,7 @@ export const api = (method, path, data, token) => {
         return res.json()
       })
       .catch((err) => {
+        console.log('server err ',err)
         return  {
           status: 502,
           message: 'Oops! Something is wrong. Please try later.'
@@ -58,6 +59,7 @@ export const api = (method, path, data, token) => {
         return res.json();
       })
       .catch((err) => {
+        console.log('server err ',err)
         return  {
           status: 502,
           message: 'Oops! Something is wrong. Please try later.'
