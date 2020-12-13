@@ -10,7 +10,7 @@ and more, see package.json
 
 ## Getting Started
 
-First, run the development API server: [koa-blog-api](https://github.com/mylastore/koa-blog-api)
+First, run the development API server found here: [koa-blog-api](https://github.com/mylastore/koa-blog-api)
 
 ```bash
 npm i
