@@ -1,6 +1,6 @@
 import AuthNav from "./AuthNav";
 
-const AuthComponent = ({children, token}) => {
+const AuthComponent = ({children}) => {
   return (
     <div className="row">
       <div className="col-md-3">

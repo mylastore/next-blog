@@ -30,7 +30,6 @@ const QuoteComponent = () => {
     }catch(err){
       return flash(err.message, 'danger')
     }
-
   }
 
   const handleChange = name => e => {
@@ -47,7 +46,6 @@ const QuoteComponent = () => {
           <label>Name</label>
           <input type="text" onChange={handleChange('name')} className="form-control" value={name} required/>
         </div>
-
         <div className="form-group">
           <label>Email</label>
           <input

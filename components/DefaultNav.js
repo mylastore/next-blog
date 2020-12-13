@@ -119,9 +119,7 @@ const DefaultNav = () => {
             )}
           </Nav>
         </Collapse>
-
       </Navbar>
-
     </div>
   )
 

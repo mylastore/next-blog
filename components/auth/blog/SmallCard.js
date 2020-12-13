@@ -5,8 +5,6 @@ import style from '../../../styles/card.module.css'
 import Image from 'next/image'
 
 const SmallCard = ({b}) => {
-
-
   return (
     <div className="card mb-3 mt-3">
       <Link href={`/blog/${b.slug}`}>

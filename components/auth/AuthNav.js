@@ -2,8 +2,7 @@ import React from 'react'
 import {Nav, NavItem, NavLink} from 'reactstrap'
 import Link from 'next/link'
 
-const AdminNav = (props) => {
-
+const AdminNav = () => {
   return (
     <Nav style={{background: '#F8F9FA', marginBottom: '2em'}} vertical>
       <NavItem>

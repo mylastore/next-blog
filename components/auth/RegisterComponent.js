@@ -64,8 +64,8 @@ const RegisterComponent = () => {
         </form>
         <div className="clearfix"> </div>
         <small id="emailHelp" className="form-text text-muted">Already register, please <Link
-          href="/user/login"><a>login.</a></Link></small>
-
+          href="/user/login"><a>login.</a></Link>
+        </small>
       </>
     )
   }

@@ -7,6 +7,8 @@
  */
 
 @import '../styles/fontawesome/css/all.css';
+@import '../styles/nprogress.css';
+
 .Site {
     display: flex;
     min-height: 100vh;
@@ -31,7 +33,9 @@
 .Site-footer {
     flex: none; /* 2 */
 }
-
+.navbar{
+    padding: .9rem 1rem;
+}
 @media (--break-lg) {
     .Site-content {
         padding-top: var(--space-lg);
@@ -53,8 +57,8 @@ a.noLink:hover{
 }
 
 .avatar{
-    max-width: 35px;
-    height: auto;
+    max-width: 30px;
+    height: 30px;
     border-radius: 50%;
     margin-right: 5px;
 }
@@ -94,8 +98,8 @@ section{
 .searResult{
     position: absolute;
     background: white;
-    z-index: 1;
-    top: 112px;
+    z-index: 6;
+    top: 129px;
     left: 0;
     right: 0;
     margin: auto;

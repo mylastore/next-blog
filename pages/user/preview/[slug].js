@@ -1,18 +1,15 @@
 import Layout from '../../../components/Layout'
 import {api} from '../../../actions/api'
 import {IMG} from "../../../config"
-import {dateFormat} from "../../../helpers/dateFormat"
 import {showCategories, showTags} from "../../../components/auth/blog/CatsAndTags"
-import styles from '../../../styles/blog.module.css'
-
 import Link from 'next/link'
 import Image from 'next/image'
-import {getCookie} from "../../../actions/auth";
 import AuthComponent from "../../../components/auth/AuthComponent";
 import parseCookies from "../../../helpers/parseCookies";
+import timeAgo from "../../../helpers/timeAgo";
+import styles from '../../../styles/blog.module.css'
 
 const blogPreview = ({b, message}) => {
-
   return (
     b === 'error' ?
       <Layout>
@@ -47,7 +44,7 @@ const blogPreview = ({b, message}) => {
               <Link href={`/public/${b.postedBy.username}`}>
                 <a className="noLink">
                   <p className="mark small">Written
-                    by {b.postedBy.name} | {dateFormat(b.updatedAt, 'MM dd, yyyy')}</p>
+                    by {b.postedBy.name} | {timeAgo(b.updatedAt)}</p>
                 </a>
               </Link>
             </section>

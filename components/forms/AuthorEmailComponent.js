@@ -43,7 +43,6 @@ const AuthorEmailComponent = ({authorEmail, authorUserName}) => {
           <label>Name</label>
           <input type="text" onChange={handleChange('name')} className="form-control" value={name} required/>
         </div>
-
         <div className="form-group">
           <label>Email</label>
           <input
