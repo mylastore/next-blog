@@ -82,6 +82,7 @@ const Blog = ({blogs, message, categories, tags, size, limit, skip, router, tota
       </Link>
     ))
   }
+
   const showAllTags = () => {
     return tags.map((t, i) => (
       <Link key={i} href={`/tags/${t.slug}`}>
@@ -122,7 +123,7 @@ const Blog = ({blogs, message, categories, tags, size, limit, skip, router, tota
                 {showBlogs()}
                 {showMoreBlogs()}
                 <div className="text-center mb-5">
-                  <p><small className="text-center">{total} blogs</small></p>
+                  <p><small className="text-center">Total of {total} blogs</small></p>
                   {loadMoreButton()}
                 </div>
               </div>

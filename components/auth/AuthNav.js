@@ -8,8 +8,8 @@ const AdminNav = () => {
       <NavItem>
         <NavItem>
           <Link href="/user/blog/create-blog">
-            <NavLink>
-              <div className="btn btn-success btn-block">Create Blog</div>
+            <NavLink style={{padding: 0}}>
+              <button className="custom btn btn-success btn-block mb-4">Create Blog</button>
             </NavLink>
           </Link>
         </NavItem>
@@ -36,8 +36,17 @@ const AdminNav = () => {
           <NavLink>Blog Management</NavLink>
         </Link>
       </NavItem>
+      <style jsx>{`
+        .custom {
+          border-radius: 0;
+          box-shadow: 0px 0px 2px 0 gray;
+        }
+
+      `}</style>
     </Nav>
+
   )
+
 
 }
 

@@ -40,10 +40,17 @@ const Slug = ({blogs, tag, message, query}) => {
           {head()}
           <div className="container">
             <section>
-              <h1>Tag: <span className={'btn btn-outline-primary'}>{tag.name}</span></h1>
-              {blogs.map((b, i) => (
-                <Card key={i} b={b}/>
-              ))}
+              <div className="row">
+                <div className="col-md-9">
+                  <h1>Tag: <span className={'btn btn-outline-primary'}>{tag.name}</span></h1>
+                  {blogs.map((b, i) => (
+                    <Card key={i} b={b}/>
+                  ))}
+                </div>
+                <div className="col-md-3">
+
+                </div>
+              </div>
             </section>
           </div>
         </Layout>

@@ -36,15 +36,21 @@ const Category = ({blogs, category, message, query}) => {
       </>
       :
       <>
-
         <Layout>
           {head()}
           <div className="container">
             <section>
-              <h1>Category: <span className={'btn btn-primary'}>{category.name}</span></h1>
-              {blogs.map((b, i) => (
-                <Card key={i} b={b}/>
-              ))}
+              <div className="row">
+                <div className="col-md-9">
+                  <h1>Category: <span className={'btn btn-primary'}>{category.name}</span></h1>
+                  {blogs.map((b, i) => (
+                    <Card key={i} b={b}/>
+                  ))}
+                </div>
+                <div className="col-md-3">
+
+                </div>
+              </div>
             </section>
           </div>
         </Layout>

@@ -27,7 +27,7 @@ const SmallCard = ({b}) => {
       <Link href={`/public/${b.postedBy.username}`}>
         <div className={style.footerLink}>
           <div className="card-footer clearfix">
-            <span className="small float-left">{timeAgo(b.updatedAt)}</span><span
+            <span className="small float-left">{timeAgo(b.createdAt)}</span><span
             className="small float-right">{b.postedBy.username}</span>
           </div>
         </div>

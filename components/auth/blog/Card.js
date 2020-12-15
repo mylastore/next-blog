@@ -30,8 +30,12 @@ const Card = ({b}) => {
         <div className="col-md-12">
           <div className='pb-3'>
             <Link href={`/public/${b.postedBy.username}`}>
-              <a className="noLink"><p className="mark small">Written
-                by {b.postedBy.username} | {timeAgo(b.updatedAt)}</p></a>
+              <a className="noLink">
+                <span className="mark small pull-left">Written
+                by {b.postedBy.username} | {timeAgo(b.createdAt)}</span>
+                <span className={'mark small float-right'}>Viewed {b.visited} times</span>
+              </a>
+
             </Link>
             <div dangerouslySetInnerHTML={{__html: b.excerpt}}/>
           </div>

@@ -90,7 +90,7 @@ const singleBlog = ({b, message}) => {
           <article>
             <div className="container">
               <section>
-                <h1><strong>{b.title}</strong></h1>
+                <h1>{b.title}</h1>
                 <div className="center mb-3">
                   <Image
                     className={`${styles.featuredImage} img img-fluid`}
@@ -103,8 +103,9 @@ const singleBlog = ({b, message}) => {
                 </div>
                 <Link href={`/public/${b.postedBy.username}`}>
                   <a className="noLink">
-                    <p className="mark small">Written
-                      by {b.postedBy.name} | {timeAgo(b.updatedAt)}</p>
+                    <span className="mark small float-left">Written
+                      by {b.postedBy.name} | {timeAgo(b.createdAt)}</span>
+                    <span className={'mark small float-right'}>Viewed {b.visited} times</span>
                   </a>
                 </Link>
               </section>
