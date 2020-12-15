@@ -44,7 +44,7 @@ const blogPreview = ({b, message}) => {
               <Link href={`/public/${b.postedBy.username}`}>
                 <a className="noLink">
                   <p className="mark small">Written
-                    by {b.postedBy.name} | {timeAgo(b.updatedAt)}</p>
+                    by {b.postedBy.name} | {timeAgo(b.createdAt)}</p>
                 </a>
               </Link>
             </section>
