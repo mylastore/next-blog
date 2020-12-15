@@ -3,8 +3,11 @@ import Router from 'next/router'
 import {api} from '../../actions/api'
 import {GOOGLE_ID} from "../../config"
 import GoogleLogin from 'react-google-login'
+import {useContext} from "react";
+import {UserContext} from "../context/UserContext";
 
 const GoogleLoginComponent = () => {
+  const {setUser} = useContext(UserContext)
 
   const responseGoogle = async (response) => {
     const idToken = response.tokenId
@@ -17,13 +20,10 @@ const GoogleLoginComponent = () => {
       if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      authenticate(res, () => {
-        if(isAuth() && isAuth().role === 'admin'){
-          return Router.push(`/admin/profile/update`)
-        } else {
-          return Router.push(`/user/profile/update`)
-        }
-      })
+      await authenticate(res, () => {})
+      delete res['token']
+      setUser(res)
+      await Router.push(`/public/${res.username}`)
 
     }catch (err){
       flash(err.message, 'danger')

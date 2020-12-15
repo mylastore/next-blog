@@ -56,25 +56,10 @@ const DefaultNav = () => {
                 <NavLink>Blog</NavLink>
               </Link>
             </NavItem>
-            <NavItem>
-              <Link href="/secret">
-                <NavLink>Secret</NavLink>
-              </Link>
-            </NavItem>
           </Nav>
           <Nav>
             {!user && (
               <>
-                <NavItem>
-                  <Link href="/user/login">
-                    <NavLink onClick={() => userLogout(() => Router.replace(`/user/login`))}>Logout</NavLink>
-                  </Link>
-                </NavItem>
-                <NavItem>
-                  <Link href="/secret">
-                    <NavLink>Secret</NavLink>
-                  </Link>
-                </NavItem>
                 <NavItem>
                   <Link href="/user/login">
                     <NavLink>Login</NavLink>
@@ -122,7 +107,6 @@ const DefaultNav = () => {
       </Navbar>
     </div>
   )
-
 }
 
 export default DefaultNav

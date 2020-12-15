@@ -4,11 +4,13 @@ import {api} from "../../../actions/api"
 import {UserContext} from "../../../components/context/UserContext";
 import AuthComponent from "../../../components/auth/AuthComponent";
 import handleAuthSSR from "../../../actions/authSSR";
+import {logout} from "../../../actions/auth";
+import Router from "next/router";
 
 const updateProfile = ({token}) => {
   const {user, setUser} = useContext(UserContext)
 
-  const[passwordValues, setPasswordState] = useState({
+  const [passwordValues, setPasswordState] = useState({
     password: '',
     confirm: '',
     match: false,
@@ -29,17 +31,17 @@ const updateProfile = ({token}) => {
   const {username, name, email, about, location, website} = values
 
   useEffect(() => {
-      (async ()=>{
-        if(user){
-          await getUser()
-        }
-      })()
+    (async () => {
+      if (user) {
+        await getUser()
+      }
+    })()
   }, [user])
 
   const getUser = async () => {
-    try{
+    try {
       const res = await api('GET', `user/profile/${user.username}`, {}, token)
-      if(res.status >= 400){
+      if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
       return setValues({
@@ -52,22 +54,22 @@ const updateProfile = ({token}) => {
         avatar: res.avatar,
         about: res.about
       })
-    }catch(err){
+    } catch (err) {
       return flash(err.message, 'danger')
     }
   }
 
   const handleChange = name => e => {
-    setValues({ ...values, [name]: e.target.value })
+    setValues({...values, [name]: e.target.value})
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-       const userData = { username, name, email, about, location, website }
+    const userData = {username, name, email, about, location, website}
 
-    try{
+    try {
       const res = await api('PATCH', `user/account/${user.username}`, userData, token)
-      if(res.status >= 400){
+      if (res.status >= 400) {
         window.scrollTo(500, 0);
         return flash(res.message, 'danger')
       }
@@ -91,7 +93,7 @@ const updateProfile = ({token}) => {
         role: res.role
       }
       return setUser(newData)
-    }catch(err){
+    } catch (err) {
       window.scrollTo(500, 0);
       return flash(err.message, 'danger')
     }
@@ -103,15 +105,15 @@ const updateProfile = ({token}) => {
       _id: user._id,
       password
     }
-    try{
+    try {
       const res = await api('POST', 'user/update-password', data, token)
-      if(res.status !== 200){
-        return flash(res.message, 'warning' )
+      if (res.status !== 200) {
+        return flash(res.message, 'warning')
       }
       setPasswordState({...passwordValues, password: '', confirm: ''})
-      return flash(res.message, 'success' )
+      return flash(res.message, 'success')
 
-    } catch (err){
+    } catch (err) {
       window.scrollTo(500, 0);
       return flash(err.message, 'warning')
     }
@@ -121,25 +123,25 @@ const updateProfile = ({token}) => {
   const handlePasswordChange = name => e => {
     let value = e.target.value
     let isMatch
-    if(name === 'confirm'){
+    if (name === 'confirm') {
       isMatch = value === password
     }
 
-    setPasswordState({ ...passwordValues, [name]: value, match: isMatch })
+    setPasswordState({...passwordValues, [name]: value, match: isMatch})
   }
 
   const form = () => (
     <form className="mt-4" onSubmit={handleSubmit}>
       <div className="form-group">
         <label className="text-muted">Username</label>
-        <input onChange={handleChange('username')} type="text" value={username} className="form-control" />
+        <input onChange={handleChange('username')} type="text" value={username} className="form-control"/>
         <small id="usernameHelp" className="form-text text-muted">
           Username must be unique, no spaces. Camelcase is acceptable.
         </small>
       </div>
       <div className="form-group">
         <label className="text-muted">Name</label>
-        <input onChange={handleChange('name')} type="text" value={name} className="form-control" />
+        <input onChange={handleChange('name')} type="text" value={name} className="form-control"/>
       </div>
       <div className="form-group">
         <label className="text-muted">Email</label>
@@ -150,15 +152,15 @@ const updateProfile = ({token}) => {
       </div>
       <div className="form-group">
         <label className="text-muted">Location</label>
-        <input onChange={handleChange('location')} type="text" value={location} className="form-control" />
+        <input onChange={handleChange('location')} type="text" value={location} className="form-control"/>
       </div>
       <div className="form-group">
         <label className="text-muted">Website</label>
-        <input onChange={handleChange('website')} type="text" value={website} className="form-control" />
+        <input onChange={handleChange('website')} type="text" value={website} className="form-control"/>
       </div>
       <div className="form-group">
         <label className="text-muted">About</label>
-        <textarea onChange={handleChange('about')} type="text" value={about} className="form-control" />
+        <textarea onChange={handleChange('about')} type="text" value={about} className="form-control"/>
       </div>
       <div>
         <button type="submit" className="btn btn-primary">
@@ -167,17 +169,41 @@ const updateProfile = ({token}) => {
       </div>
     </form>
   )
+  const handleDeleteAccount = async () => {
+    const result = window.confirm("Are you sure you want to delete your account?")
+
+    if(result){
+      try {
+        const res = await api('POST', `user/delete`, {_id: user._id}, token)
+        console.log('res ',res)
+        if (res.status >= 400) {
+          window.scrollTo(500, 0);
+          return flash(res.message, 'danger')
+        }
+        setUser(null)
+        await logout()
+        flash('User was deleted!', 'success')
+        window.scrollTo(500, 0);
+        return await Router.push('/')
+      }catch (err){
+        window.scrollTo(500, 0);
+        return flash(err.message, 'danger')
+      }
+    }
+
+  }
 
   const passwordForm = () => (
     <form className="mt-4" onSubmit={passwordSubmit}>
       <div className="form-group">
         <label className="text-muted">Password</label>
-        <input onChange={handlePasswordChange('password')} type="password" value={password} className="form-control" />
-        <small id="usernameHelp" className="form-text text-muted">Password must be at least 6 characters and must contain 1 uppercase and 1 symbol.</small>
+        <input onChange={handlePasswordChange('password')} type="password" value={password} className="form-control"/>
+        <small id="usernameHelp" className="form-text text-muted">Password must be at least 6 characters and must
+          contain 1 uppercase and 1 symbol.</small>
       </div>
       <div className="form-group">
         <label className="text-muted">Confirm Password</label>
-        <input onChange={handlePasswordChange('confirm')} type="password" value={confirm} className="form-control" />
+        <input onChange={handlePasswordChange('confirm')} type="password" value={confirm} className="form-control"/>
         {password !== confirm && confirm !== '' && (
           <div className="mt-3 alert alert-warning" role="alert">
             {message}
@@ -193,6 +219,15 @@ const updateProfile = ({token}) => {
     </form>
   )
 
+  const deleteAccount = () => (
+    <div className="form-group">
+      <h5 className={"bold"}>Delete my account</h5>
+      <hr/>
+      <button onClick={handleDeleteAccount} className={'btn btn-danger'}>Delete Account</button>
+      <small className="form-text text-muted">Before deleting your account you must delete all of yours blogs.</small>
+    </div>
+  )
+
   return (
     <Layout>
       <section>
@@ -205,9 +240,11 @@ const updateProfile = ({token}) => {
               </div>
               <div className="col-md-4">
                 {passwordForm()}
+                <div className={'mt-5'}>
+                  {deleteAccount()}
+                </div>
               </div>
             </div>
-
           </AuthComponent>
         </div>
       </section>
