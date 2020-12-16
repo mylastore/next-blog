@@ -58,7 +58,6 @@ const CreateBlog = ({token, router}) => {
 
   const handleChange = name => e => {
     const value = name === 'avatar' ? e.target.files[0] : e.target.value
-    formData.set('isForm', 'isForm')
     formData.set(name, value)
     setValues({...values, [name]: value, formData})
 

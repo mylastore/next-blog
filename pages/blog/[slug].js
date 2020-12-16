@@ -99,12 +99,11 @@ const singleBlog = ({b, message}) => {
                     width={1080}
                     height={200}
                   />
-
                 </div>
                 <Link href={`/public/${b.postedBy.username}`}>
                   <a className="noLink">
                     <span className="mark small float-left">Written
-                      by {b.postedBy.name} | {timeAgo(b.createdAt)}</span>
+                      by {b.postedBy.username} | {timeAgo(b.createdAt)}</span>
                     <span className={'mark small float-right'}>Viewed {b.visited} times</span>
                   </a>
                 </Link>

@@ -27,10 +27,12 @@ const blogPreview = ({b, message}) => {
             <AuthComponent>
             <section>
               <div className="clearfix">
-                <h1 className={'float-left'}>Blog Preview</h1>
+                <div className="alert alert-info" role="alert">
+                  <h5 className={'text-center'}>Blog Preview</h5>
+                </div>
               </div>
               <hr/>
-              <h1><strong>{b.title}</strong></h1>
+              <h1>{b.title}</h1>
               <div className="center mb-3">
                 <Image
                   className={`${styles.featuredImage} img img-fluid`}

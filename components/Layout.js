@@ -1,13 +1,11 @@
 import DefaultNav from '../components/DefaultNav'
-import Flash from '../components/Flash';
-import Search from './auth/blog/Search'
+import Flash from '../components/Flash'
 import Link from "next/link"
 
 const Layout = ({children}) => {
   return (
     <div className="Site">
       <DefaultNav />
-      <Search/>
       <Flash/>
       <div className="Site-content">
         {children}

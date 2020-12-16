@@ -1,4 +1,4 @@
-import {useContext, useState} from 'react'
+import React, {useContext, useState} from 'react'
 import {APP_NAME} from '../config'
 import Link from 'next/link'
 import {logout} from '../actions/auth'
@@ -17,7 +17,8 @@ import {
 } from 'reactstrap'
 import Router from 'next/router'
 import nprogress from 'nprogress'
-import {UserContext} from "./context/UserContext";
+import {UserContext} from "./context/UserContext"
+import Search from "./auth/blog/Search";
 
 Router.onRouteChangeStart = url => nprogress.start()
 Router.onRouteChangeComplete = url => nprogress.done()
@@ -44,17 +45,22 @@ const DefaultNav = () => {
 
   return (
     <div className="Site-header">
-      <Navbar color="light" light expand="md">
+      <Navbar color="light" light expand="md" style={{padding: '0 1rem'}}>
         <Link href="/">
           <NavLink className="font-weight-bold">{APP_NAME}</NavLink>
         </Link>
-        <NavbarToggler onClick={toggle}/>
-        <Collapse isOpen={isOpen} navbar>
+        <NavbarToggler onClick={toggle} style={{margin: '8px 0'}}/>
+        <Collapse isOpen={isOpen} navbar style={{padding: '0 .1rem'}}>
           <Nav className="mr-auto" navbar>
             <NavItem>
               <Link href="/blog">
                 <NavLink>Blog</NavLink>
               </Link>
+            </NavItem>
+          </Nav>
+          <Nav className="mr-auto">
+            <NavItem>
+              <Search/>
             </NavItem>
           </Nav>
           <Nav>
