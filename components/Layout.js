@@ -1,11 +1,11 @@
-import DefaultNav from '../components/DefaultNav'
 import Flash from '../components/Flash'
 import Link from "next/link"
+import Nav from "./Nav";
 
 const Layout = ({children}) => {
   return (
     <div className="Site">
-      <DefaultNav />
+      <Nav />
       <Flash/>
       <div className="Site-content">
         {children}

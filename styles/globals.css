@@ -110,7 +110,7 @@ section{
     overflow-y: auto;
 }
 
-.has-search .form-control {
+.has-search input {
     padding-left: 2.375rem;
 }
 

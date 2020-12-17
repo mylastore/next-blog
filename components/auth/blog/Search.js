@@ -14,21 +14,21 @@ const Search = () => {
 
   async function submitForm(e) {
     e.preventDefault()
-    try{
+    try {
       const res = await api('GET', `blogs/search?q=${query}`)
-      if(res.status >= 400){
+      if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
       setValues({...values, results: res, searched: true, count: `${res.length}`})
 
-    }catch (err){
+    } catch (err) {
       return flash(err.message, 'danger')
     }
   }
 
   const resetForm = () => {
     setValues({...values, query: undefined, searched: false, results: []})
-    document.getElementById("myForm").reset();
+    document.getElementById("search-form").reset();
   }
 
   const handleChange = e => {
@@ -80,31 +80,22 @@ const Search = () => {
   }
 
   const searchForm = () => (
-    <div className="row justify-content-center">
-      <div className="col-md-12">
-        <form id="myForm" onSubmit={submitForm}>
-          <div className="form-group has-search">
-            <i className="fas fa-search form-control-feedback"> </i>
-            <input type="search" className="form-control" placeholder="Search" value={query} onChange={handleChange}/>
-          </div>
-        </form>
-      </div>
-      <style jsx>{`
-          .form-group{
-            margin-bottom: 10px;
-          }
-        `}
-      </style>
+    <div className="justify-content-md-center">
+      <form id="search-form" onSubmit={submitForm} className="form-inline my-2 my-lg-0 my-lg-0">
+        <div className="form-group has-search">
+          <i className="fas fa-search form-control-feedback"> </i>
+          <input type="search" className="form-control mr-sm-2" placeholder="Search" value={query}
+                 onChange={handleChange}/>
+        </div>
+      </form>
     </div>
   )
 
   return (
-    <div className='searchContainer'>
-      <div className="container mt-2">
-        {searchForm()}
-        {searched && <div className='searResult'>{searchedResult(results)}</div>}
-      </div>
-    </div>
+    <>
+      {searchForm()}
+      {searched && <div>{searchedResult(results)}</div>}
+    </>
   );
 };
 

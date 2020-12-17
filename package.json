@@ -8,7 +8,6 @@
     "live": "next start -p 3001"
   },
   "dependencies": {
-    "bootstrap": "^4.5.2",
     "cookie": "^0.4.1",
     "events": "^3.2.0",
     "isomorphic-fetch": "^3.0.0",
