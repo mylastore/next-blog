@@ -54,8 +54,7 @@ export const authenticate = async (data, next) => {
 export const isAuth = () => {
   if (process.browser) {
     if (getCookie('token')) {
-      const user = getCookieAsJSON('rememberMe')
-      return user
+      return getCookieAsJSON('rememberMe')
     }
     return false
   }

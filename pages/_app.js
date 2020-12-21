@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/globals.css'
 import 'nprogress/nprogress.css'
 import 'react-quill/dist/quill.snow.css'

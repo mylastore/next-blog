@@ -9,7 +9,12 @@ import Search from "./auth/blog/Search";
 const Nav = () => {
   const {user, setUser} = useContext(UserContext)
   const [isOpen, setIsOpen] = useState(false)
+  const [show, setShow] = useState(false)
   const toggle = () => setIsOpen(!isOpen)
+  const showToggle = () => {
+    setShow(!show)
+  }
+
 
   async function userLogout() {
     try {
@@ -150,22 +155,6 @@ const Nav = () => {
                 <a className="nav-link">Quote</a>
               </ActiveLink>
             </li>
-
-            {user && (
-              <>
-                <li className={'nav-item'}>
-                  <ActiveLink activeClassName="active" href={`/public/${user.username}`} as="/dynamic-route">
-                    <a className="nav-link">Dynamic Route</a>
-                  </ActiveLink>
-                </li>
-                <li className={'nav-item'}>
-                  <ActiveLink activeClassName="active" href="/user/profile/update">
-                    <a className="nav-link">User Panel</a>
-                  </ActiveLink>
-                </li>
-              </>
-            )
-            }
           </ul>
           <ul className="navbar-nav mr-auto ml-auto">
             <li className="nav-item">
@@ -173,7 +162,7 @@ const Nav = () => {
             </li>
           </ul>
           <ul className="navbar-nav">
-            {!user && (
+            {!user ? (
               <>
                 <li className={'nav-item'}>
                   <ActiveLink activeClassName="active" href="/user/register">
@@ -186,7 +175,37 @@ const Nav = () => {
                   </ActiveLink>
                 </li>
               </>
-            )}
+            ) : (
+              <>
+                <li className="nav-item dropdown" onClick={showToggle}>
+                  <div className="dropstart">
+                    <a className={`nav-link dropdown-toggle ${show ? "show" : ""}`} href="#"
+                       id="navbarDarkDropdownMenuLink" role="button"
+                       data-bs-toggle="dropdown" aria-expanded={`${show ? "false" : "true"}`}>
+                      {user.username}
+                    </a>
+                    <ul className={`dropdown-menu dropdown-menu-dark dropdown-menu-right ${show ? 'show' : ""}`}
+                        aria-labelledby="navbarDarkDropdownMenuLink">
+                      <li>
+                        <ActiveLink activeClassName="active" href={`/public/${user.username}`}>
+                          <a className="dropdown-item">Profile</a>
+                        </ActiveLink>
+                      </li>
+                      <li>
+                        <ActiveLink activeClassName="active" href="/user/profile/update">
+                          <a className="dropdown-item">Panel</a>
+                        </ActiveLink>
+                      </li>
+                      <li>
+                        <a className="dropdown-item"
+                           onClick={() => userLogout(() => Router.replace(`user/login`))}>Logout</a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </>
+            )
+            }
           </ul>
         </div>
       </div>
