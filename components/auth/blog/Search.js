@@ -56,6 +56,19 @@ const Search = () => {
           );
         })}
         <style jsx>{`
+          .searchForm{
+            position: absolute;
+            background: white;
+            z-index: 2;
+            max-width: 930px;
+            margin: auto;
+            display: block;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            top: 81px;
+            border: solid 2px cornflowerblue;
+          }
           .customBtn {
             position: absolute;
             top: 4px;

@@ -2,10 +2,10 @@ import Cookies from 'js-cookie'
 
 export const handleSession = async (res) => {
   if (res.status === 440) {
-    flash('Session has expired.', 'danger')
     await logout()
     setTimeout(()=>{
       window.location.replace('/')
+      alert("Session has expired.")
     }, 1000)
   }
 }

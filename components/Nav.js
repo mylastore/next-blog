@@ -158,7 +158,7 @@ const Nav = () => {
           </ul>
           <ul className="navbar-nav mr-auto ml-auto">
             <li className="nav-item">
-              <Search/>
+              <Search />
             </li>
           </ul>
           <ul className="navbar-nav">
