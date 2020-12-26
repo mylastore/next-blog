@@ -4,7 +4,7 @@
       "name": "defaultseo",
       "script": "next start -p 3001",
       "instances": 1,
-      "exec_mode": "cluster"
+      "exec_mode": "fork"
     }
   ]
 }
