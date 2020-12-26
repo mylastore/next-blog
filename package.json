@@ -5,7 +5,8 @@
   "scripts": {
     "start": "next dev -p 3001",
     "build": "next build",
-    "live": "next start -p 3001"
+    "live": "next start -p 3001",
+    "production": "NODE_ENV=production pm2 start ecosystem.json"
   },
   "dependencies": {
     "bootstrap": "^4.5.3",
