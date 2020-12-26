@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import ActiveLink from "../ActiveLink";
 
 const AdminNav = () => {

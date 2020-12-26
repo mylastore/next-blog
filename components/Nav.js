@@ -5,7 +5,7 @@ import {api} from "../actions/api";
 import {logout} from "../actions/auth";
 import Router from "next/router";
 import Search from "./auth/blog/Search";
-
+import {APP_NAME} from '../config'
 const Nav = () => {
   const {user, setUser} = useContext(UserContext)
   const [isOpen, setIsOpen] = useState(false)
@@ -132,7 +132,7 @@ const Nav = () => {
       <div className="container-fluid">
 
         <ActiveLink activeClassName="active" href="/">
-          <a className="navbar-brand">Navbar</a>
+          <a className="navbar-brand">{APP_NAME}</a>
         </ActiveLink>
 
         <button onClick={toggle} className={`navbar-toggler custom-button`} type="button" data-toggle="collapse"
