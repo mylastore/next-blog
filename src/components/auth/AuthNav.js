@@ -1,40 +1,40 @@
 import React from 'react'
-import Link from 'next/link'
+import ActiveLink from "../ActiveLink";
 
 const AdminNav = () => {
   return (
-    <div>
-      <ul className="nav flex-column" style={{background: '#F8F9FA', marginBottom: '2em'}}>
-        <li className="nav-item">
-          <Link href="/user/blog/create-blog">
-            <button className="custom btn btn-success btn-block mb-4">Create Blog</button>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link href="/user/profile/update">
-            <a className="nav-link">Profile</a>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link href="/user/blog/categories">
-            <a className="nav-link">Categories</a>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link href="/user/blog/tags">
-            <a className="nav-link">Tags</a>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link href="/user/blog/blogs">
-            <a className="nav-link">Blog Management</a>
-          </Link>
-        </li>
-      </ul>
+    <div className="custom" style={{background: '#F8F9FA', marginBottom: '2em'}}>
+      <div className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+        <ActiveLink activeClassName="active" href="/user/blog/create-blog">
+          <a className="nav-link" id="v-pills-home-tab" data-toggle="pill" role="tab"
+             aria-controls="v-pills-home" aria-selected="true">Create blog</a>
+        </ActiveLink>
+
+        <ActiveLink activeClassName="active" href="/user/profile/update">
+          <a className="nav-link" id="v-pills-profile-tab" data-toggle="pill" role="tab"
+             aria-controls="v-pills-profile" aria-selected="false">Profile</a>
+        </ActiveLink>
+
+        <ActiveLink activeClassName="active" href="/user/blog/categories">
+          <a className="nav-link" id="v-pills-messages-tab" data-toggle="pill" role="tab"
+             aria-controls="v-pills-messages" aria-selected="false">Categories</a>
+        </ActiveLink>
+
+        <ActiveLink activeClassName="active" href="/user/blog/tags">
+          <a className="nav-link" id="v-pills-settings-tab" data-toggle="pill" role="tab"
+             aria-controls="v-pills-settings" aria-selected="false">Tags</a>
+        </ActiveLink>
+
+        <ActiveLink activeClassName="active" href="/user/blog/blogs">
+          <a className="nav-link" id="v-pills-settings-tab" data-toggle="pill" role="tab"
+             aria-controls="v-pills-settings" aria-selected="false">Blog Management</a>
+        </ActiveLink>
+
+      </div>
       <style jsx>{`
           .custom {
-            border-radius: 0;
-            box-shadow: 0px 0px 2px 0 gray;
+            height: 100%;
           }    
         `}
       </style>
