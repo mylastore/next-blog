@@ -2,7 +2,6 @@ import Link from "next/link"
 import {IMG} from '../../../config'
 import style from '../../../styles/card.module.css'
 import {showTags, showCategories} from "./CatsAndTags"
-import Image from 'next/image'
 import timeAgo from "../../../helpers/timeAgo"
 
 const Card = ({b}) => {
@@ -15,10 +14,8 @@ const Card = ({b}) => {
         <div className="mb-3">
           <Link href={`/blog/${b.slug}`}>
             <a>
-              <Image
+              <img
                 className="img img-fluid mb-3"
-                width={700}
-                height={150}
                 src={`${IMG}/${b.avatar}`}
                 alt={b.title}
               />

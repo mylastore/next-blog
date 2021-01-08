@@ -2,7 +2,6 @@ import Link from "next/link"
 import timeAgo from "../../../helpers/timeAgo"
 import {IMG} from '../../../config'
 import style from '../../../styles/card.module.css'
-import Image from 'next/image'
 
 const SmallCard = ({b}) => {
   return (
@@ -10,10 +9,8 @@ const SmallCard = ({b}) => {
       <Link href={`/blog/${b.slug}`}>
         <div className={style.link}>
 
-          <Image
+          <img
             className="card-img-top"
-            width={480}
-            height={100}
             src={`${IMG}/${b.avatar}`}
             alt={b.title}
           />

@@ -3,7 +3,6 @@ import {api} from '../../../actions/api'
 import {IMG} from "../../../config"
 import {showCategories, showTags} from "../../../components/auth/blog/CatsAndTags"
 import Link from 'next/link'
-import Image from 'next/image'
 import AuthComponent from "../../../components/auth/AuthComponent";
 import parseCookies from "../../../helpers/parseCookies";
 import timeAgo from "../../../helpers/timeAgo";
@@ -34,12 +33,10 @@ const blogPreview = ({b, message}) => {
               <hr/>
               <h1>{b.title}</h1>
               <div className="center mb-3">
-                <Image
+                <img
                   className={`${styles.featuredImage} img img-fluid`}
                   src={`${IMG}/${b.avatar}`}
                   alt={b.title}
-                  width={1080}
-                  height={200}
                 />
 
               </div>

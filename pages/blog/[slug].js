@@ -9,7 +9,6 @@ import SmallCard from "../../components/auth/blog/SmallCard"
 import styles from '../../styles/blog.module.css'
 import DisqusThread from "../../components/DisqusThread"
 import Link from 'next/link'
-import Image from 'next/image'
 
 const singleBlog = ({b, message}) => {
   const head = () => (
@@ -92,12 +91,10 @@ const singleBlog = ({b, message}) => {
               <section>
                 <h1>{b.title}</h1>
                 <div className="center mb-3">
-                  <Image
+                  <img
                     className={`${styles.featuredImage} img img-fluid`}
                     src={`${IMG}/${b.avatar}`}
                     alt={b.title}
-                    width={1080}
-                    height={200}
                   />
                 </div>
                 <Link href={`/public/${b.postedBy.username}`}>
