@@ -44,10 +44,8 @@ const resetPassword = ({router}) => {
             >
               <Form>
                 <FormInput name="password" type="password" label="Password"/>
-                <FormInput name="passwordConfirm" type="password" label="Confirm Password"/>
-                <small id="emailHelp" className="form-text text-muted">Password minimum length 8, must have 1 capital
-                  letter, 1 number and 1 special character.
-                </small>
+                <FormInput name="passwordConfirm" type="password" label="Confirm Password" helper="Password minimum length 8, must have 1 capital
+                  letter, 1 number and 1 special character"/>
                 <button type="submit" className={'btn btn-primary'}>Send</button>
               </Form>
             </Formik>

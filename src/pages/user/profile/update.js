@@ -118,15 +118,17 @@ const updateProfile = ({token}) => {
       }}
     >
       <Form>
-        <FormInput name="username" type="text" label="Username"/>
-        <small id="usernameHelp" className="form-text text-muted mb-2">
-          Username must be unique, no spaces. Camelcase is acceptable.
-        </small>
+        <FormInput name="username" type="text" label="Username" helper="Username must be unique, no spaces and camelcase is permitted"/>
         <FormInput name="name" type="text" label="Name"/>
-        <FormInput className="text-muted form-control" value={email} name="email" type="email" label="Email" disabled/>
-        <small id="usernameHelp" className="form-text text-muted">
-          Emails can't be change.
-        </small>
+        <FormInput
+          className="text-muted form-control"
+          value={email}
+          name="email"
+          type="email"
+          label="Email"
+          helper="Email can't be change."
+          disabled
+        />
         <FormInput name="location" type="text" label="Location"/>
         <FormInput name="website" type="text" label="Website"/>
         <FormTextArea name="about" label="About" />
@@ -170,9 +172,8 @@ const updateProfile = ({token}) => {
       }}
     >
       <Form>
-        <FormInput name="password" type="password" label="Password"/>
-        <small id="usernameHelp" className="form-text text-muted mb-2">Password must be at least 6 characters and must
-          contain 1 uppercase and 1 symbol.</small>
+        <FormInput name="password" type="password" label="Password" helper="Password must be at least 6 characters and must
+          contain 1 uppercase and 1 symbol"/>
         <FormInput name="passwordConfirm" type="password" label="Confirm Password"/>
         <button type="submit" className={'btn btn-primary'}>Update Password</button>
       </Form>

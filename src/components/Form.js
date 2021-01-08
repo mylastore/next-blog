@@ -1,12 +1,17 @@
-import {useField} from "formik"
+import {Form, useField} from "formik"
 
-export const FormInput = ({label, ...props}) => {
+export const FormInput = ({label, helper, ...props}) => {
   const [field, meta] = useField(props)
 
   return (
     <div className={'form-group'}>
       <label>{label || props.placeholder}</label>
       <input className={'form-control'} {...field} {...props} />
+      {helper ?
+        <small id="usernameHelp" className="form-text text-muted">
+          {helper}
+        </small>
+       : null }
       {meta.touched && meta.error ? (
         <div className="error alert alert-danger mt-2">{meta.error}</div>
       ) : null}

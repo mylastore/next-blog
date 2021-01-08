@@ -43,10 +43,8 @@ const RegisterComponent = () => {
           <Form>
             <FormInput name="name" type="text" label="Name"/>
             <FormInput name="email" type="email" label="Email"/>
-            <FormInput name="password" type="password" label="Password"/>
-            <small id="emailHelp" className="form-text text-muted">Password minimum length 8, must have 1 capital
-              letter, 1 number and 1 special character.
-            </small>
+            <FormInput name="password" type="password" label="Password" helper="Password minimum length 8, must have 1 capital
+              letter, 1 number and 1 special character" />
             <button type={'submit'} className="btn btn-block btn-primary mt-3 mb-2">Register</button>
           </Form>
         </Formik>

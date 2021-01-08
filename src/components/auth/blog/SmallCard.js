@@ -11,7 +11,7 @@ const SmallCard = ({b}) => {
           <img className="card-img-top" src={`${IMG}/${b.avatar}`} alt={b.title} />
           <div className="card-body">
             <div className="card-title line-clamp line-clamp-2"><b>{b.title}</b></div>
-            <div className="card-text" dangerouslySetInnerHTML={{__html: b.excerpt}}/>
+            <div className="card-text line-clamp line-clamp-5" dangerouslySetInnerHTML={{__html: b.excerpt}}/>
           </div>
         </div>
       </Link>
@@ -37,6 +37,9 @@ const SmallCard = ({b}) => {
         }
         .line-clamp-2 {
           -webkit-line-clamp: 2;
+        }
+        .line-clamp-5 {
+          -webkit-line-clamp: 5;
         }
       `}</style>
     </div>

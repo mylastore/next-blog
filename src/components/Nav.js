@@ -39,12 +39,6 @@ const Nav = () => {
         position: relative;
         color: green;
       }
-      .active:after {
-        position: absolute;
-        right: 0px;
-        content: ' ◂';
-        color: green;
-      }
       .navbar-brand.active:after {
         right: -10px;
       }
