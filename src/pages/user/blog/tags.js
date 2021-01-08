@@ -1,35 +1,34 @@
-import { useState, useEffect } from 'react'
+import React, {useState, useEffect} from 'react'
 import {api} from '../../../actions/api'
 import Layout from "../../../components/Layout";
-import AuthComponent from "../../../components/auth/AuthComponent";
-import handleAuthSSR from "../../../actions/authSSR";
+import AuthComponent from "../../../components/auth/AuthComponent"
+import handleAuthSSR from "../../../actions/authSSR"
+import {Form, Formik} from 'formik'
+import {CategoryTagSchema} from "../../../actions/schemas"
+import {FormInput} from "../../../components/Form"
 
 const Tag = ({token}) => {
-  const [visibility, setVisibility] = useState(false)
-  const [values, setValues] = useState({
-    name: '',
+  const [tagValues, setTagValues] = useState({
     tags: [],
-    reload: false,
-    gotTags: false
-  });
+    reload: false
+  })
 
-  const { name, tags, reload, gotTags } = values;
+  const {tags, reload} = tagValues
 
   useEffect(() => {
-    (async ()=> {
+    (async () => {
       await getTags()
     })()
-   }, [reload]);
+  }, [reload]);
 
   const getTags = async () => {
-    try{
+    try {
       const res = await api('GET', 'tag',)
-      if(res.status >= 400){
+      if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      setVisibility(true)
-      return setValues({ ...values, tags: res, gotTags: res.length > 0 })
-    }catch (err){
+      return setTagValues({...tagValues, tags: res})
+    } catch (err) {
       return flash(err.message, 'danger')
     }
   }
@@ -37,14 +36,14 @@ const Tag = ({token}) => {
   const showTags = () => {
     return tags.map((t, i) => {
       return (
-        <button
-          onDoubleClick={() => deleteConfirm(t.slug)}
-          title="Double click to delete"
-          key={i}
-          className="btn btn-outline-primary mr-1 ml-1 mt-3"
-        >
-          {t.name}
-        </button>
+          <span
+            onDoubleClick={() => deleteConfirm(t.slug)}
+            title="Double click to delete"
+            key={i}
+            className="btn btn-outline-primary btn-sm mt-1 mr-1"
+          >
+            {t.name}
+          </span>
       )
     })
   }
@@ -56,64 +55,72 @@ const Tag = ({token}) => {
   }
 
   const deleteTag = async slug => {
-    try{
+    try {
       const res = await api('DELETE', `tag/${slug}`, {}, token)
-      if(res.status >= 400){
+      if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      setValues({ ...values, name: '', reload: !reload })
+      setTagValues({...tagValues, reload: !reload})
       return flash(res.message, 'success')
-    }catch (err){
+    } catch (err) {
       return flash(err.message, 'danger')
     }
   }
 
-  const createTag = async e => {
-    e.preventDefault();
-    try{
-      const res = await api("POST", "tag", { name }, token)
-      if(res.status >= 400){
+  const createTag = async values => {
+    try {
+      const res = await api("POST", "tag", values, token)
+      if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      setValues({ ...values, name: '', reload: !reload, gotTags: res.length > 0})
+      setTagValues({...tagValues, reload: !reload})
       return flash("Tag created successfully.", "success")
-    }catch (err){
-    return flash(err.message, 'danger')
+    } catch (err) {
+      return flash(err.message, 'danger')
     }
-
   }
 
-  const handleChange = e => {
-    flash('')
-    setValues({ ...values, name: e.target.value, removed: '' });
-  };
-
   const newTagFom = () => (
-    <form onSubmit={createTag}>
-      <div className="form-group">
-        <label className="text-muted">Name</label>
-        <input type="text" className="form-control" onChange={handleChange} value={name} required />
-      </div>
-      <div>
-        <button type="submit" className="btn btn-primary">
-          Create
-        </button>
-      </div>
-      <br/>
-      {gotTags && (
-      <p className="alert alert-info"><i className="fas fa-info-circle"> </i>&nbsp; Double click on a tag to delete it.</p>
-      )}
-    </form>
-  );
+    <Formik
+      initialValues={{name: ''}}
+      validationSchema={CategoryTagSchema}
+      onSubmit={async (values, actions) => {
+        await createTag(values)
+        actions.resetForm({
+          values: {name: ''}
+        })
+      }}
+    >
+      <Form>
+        <FormInput name="name" type="text" label="Tag Name"/>
+        <button type="submit" className={'btn btn-primary'}>Create</button>
+      </Form>
+    </Formik>
+  )
 
   return (
-    visibility &&
     <Layout>
       <section>
         <div className="container-fluid">
           <AuthComponent>
-        {newTagFom()}
-        {showTags()}
+            <div className="row">
+              <div className="col-md-6">
+                {newTagFom()}
+              </div>
+              <div className="col-md-6">
+                {tags.length > 0 && (
+                  <p className="alert alert-info mt-2"><span className="symbol">&#33; </span>Double click on a tag to delete it</p>
+                )}
+                <style jsx>{`
+                  .symbol{
+                    font-weight: bold;
+                    color: inherit;
+                    margin-right: 2px;    
+                  }        
+                `}</style>
+                {showTags()}
+              </div>
+            </div>
           </AuthComponent>
         </div>
       </section>

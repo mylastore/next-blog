@@ -1,65 +1,29 @@
-import {useState} from 'react'
 import {api} from "../../../actions/api"
 import Layout from "../../../components/Layout"
 import {withRouter} from "next/router"
-import isAuth from "../../../actions/isAuth";
+import isAuth from "../../../actions/isAuth"
+import {Form, Formik} from "formik"
+import {ResetPasswordSchema} from "../../../actions/schemas"
+import {FormInput} from "../../../components/Form"
 
 const resetPassword = ({router}) => {
-  const [values, setValues] = useState({
-    password: '',
-    passwordConfirm: '',
-    match: false,
-    message: 'Password did not match.'
-  })
-  const {password, passwordConfirm, message, match} = values
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (values) => {
     const data = {
-      password: password,
+      password: values.password,
       passwordResetToken: router.query.token
     }
-    try{
+    try {
       const res = await api('POST', 'user/reset-password', data)
-      if(res.status >= 400){
+      if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      setValues({...values, password: '', passwordConfirm: ''})
       setTimeout(() => {
         return flash('Success! Please login.', 'success')
       }, 500)
-    }catch (err){
+    } catch (err) {
       return flash(err.message, 'danger')
     }
   }
-
-  const handleChange = name => e => {
-    let value = e.target.value
-    let isMatch
-    if(name === 'passwordConfirm'){
-      isMatch = value === password
-    }
-    setValues({...values, [name]: value, match: isMatch})
-  }
-
-  const resetPasswordForm = () => (
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label>Enter Your New Password</label>
-        <input type="password" onChange={handleChange('password')} className="form-control" value={password} required/>
-      </div>
-      <div className="form-group">
-        <label>Confirm Your New Password</label>
-        <input type="password" onChange={handleChange('passwordConfirm')} className="form-control" value={passwordConfirm} required/>
-        {password !== passwordConfirm && passwordConfirm !== '' && (
-          <div className="mt-3 alert alert-warning" role="alert">
-            {message}
-          </div>
-        )}
-      </div>
-      <button type="submit" className="btn btn-primary" disabled={!match}>Send</button>
-    </form>
-  )
 
   return (
     <Layout>
@@ -68,14 +32,30 @@ const resetPassword = ({router}) => {
           <div className="col-md-6 offset-3">
             <h4>Password Reset Form</h4>
             <hr/>
-            {resetPasswordForm()}
+            <Formik
+              initialValues={{password: '', passwordConfirm: ''}}
+              validationSchema={ResetPasswordSchema}
+              onSubmit={async (values, actions) => {
+                await handleSubmit(values)
+                actions.resetForm({
+                  values: {password: '', passwordConfirm: ''}
+                })
+              }}
+            >
+              <Form>
+                <FormInput name="password" type="password" label="Password"/>
+                <FormInput name="passwordConfirm" type="password" label="Confirm Password"/>
+                <small id="emailHelp" className="form-text text-muted">Password minimum length 8, must have 1 capital
+                  letter, 1 number and 1 special character.
+                </small>
+                <button type="submit" className={'btn btn-primary'}>Send</button>
+              </Form>
+            </Formik>
           </div>
         </div>
-
       </div>
     </Layout>
   )
-
 }
 
 export async function getServerSideProps({req}) {

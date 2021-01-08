@@ -12,7 +12,7 @@ const Layout = ({children}) => {
       </div>
       <footer className="footer Site-footer">
         <Link href="/quote">
-          <a className="noLink">Need a Custom App? Get a Quote</a>
+          <a className="noLink">Need a Custom App?</a>
         </Link>
       </footer>
     </div>

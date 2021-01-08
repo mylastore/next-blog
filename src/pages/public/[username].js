@@ -8,7 +8,7 @@ import {APP_NAME, DOMAIN, FACEBOOK_ID} from "../../config";
 import AuthorEmailComponent from "../../components/forms/AuthorEmailComponent"
 import {isAuth} from "../../actions/auth"
 
-const publicUserProfile = ({data, message}) => {
+const publicUserProfile = ({data, error}) => {
 
   let currentUser
   if (process.browser){
@@ -47,16 +47,16 @@ const publicUserProfile = ({data, message}) => {
       })
     }
     return (
-      <div><p>No Blogs Yet!</p></div>
+      <div><p>Look like {user.username} has not created any blogs yet! <br/>⊙︿⊙</p></div>
     )
   }
 
   return (
-    data === 'error' ?
+    error ?
       <Layout>
         <div className="container">
           <div className="alert alert-danger mt-3">
-            {message}
+            {error}
           </div>
         </div>
       </Layout>
@@ -87,7 +87,7 @@ const publicUserProfile = ({data, message}) => {
             </div>
             <div className="row">
               <div className="col-md-6 mt-5">
-                <h4 className={'mb-3'}>Blogs by {user.name}</h4>
+                <h4 className={'mb-3'}>Blogs by {user.username}</h4>
                 <div className={styles.scroll}>
                   {showBlogLinks()}
                 </div>
@@ -105,19 +105,10 @@ const publicUserProfile = ({data, message}) => {
 export async function getServerSideProps({query}) {
   try{
     const res = await api('GET', `user/account/${query.username}`)
-    if (!res) {
-      return {
-        props: {
-          data: 'error',
-          message: 'Oops! Something is wrong. Try later.'
-        }
-      }
-    }
     if (res.status >= 400) {
       return {
         props: {
-          data: 'error',
-          message: res.message
+          error: res.message
         }
       }
     }
@@ -130,8 +121,7 @@ export async function getServerSideProps({query}) {
   }catch(err){
     return {
       props: {
-        data: 'error',
-        message: err.message
+        error: err.message
       }
     }
   }

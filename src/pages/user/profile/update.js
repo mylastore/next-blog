@@ -1,34 +1,28 @@
 import Layout from "../../../components/Layout"
 import {useContext, useEffect, useState} from "react"
 import {api} from "../../../actions/api"
-import {UserContext} from "../../../components/context/UserContext";
-import AuthComponent from "../../../components/auth/AuthComponent";
-import handleAuthSSR from "../../../actions/authSSR";
-import {logout} from "../../../actions/auth";
-import Router from "next/router";
+import {UserContext} from "../../../components/context/UserContext"
+import AuthComponent from "../../../components/auth/AuthComponent"
+import handleAuthSSR from "../../../actions/authSSR"
+import {logout} from "../../../actions/auth"
+import Router from "next/router"
+import {Form, Formik} from 'formik'
+import {FormInput, FormTextArea} from '../../../components/Form'
+import {ResetPasswordSchema, UserUpdateSchema} from "../../../actions/schemas"
 
 const updateProfile = ({token}) => {
   const {user, setUser} = useContext(UserContext)
 
-  const [passwordValues, setPasswordState] = useState({
-    password: '',
-    confirm: '',
-    match: false,
-    message: 'Password did not match.'
-  })
-  const {password, confirm, message, match} = passwordValues
-
-  const [values, setValues] = useState({
+  const [userValues, setUserValues] = useState({
     username: '',
     name: '',
     email: '',
     about: '',
     location: '',
-    website: '',
-    avatar: ''
+    website: ''
   })
 
-  const {username, name, email, about, location, website} = values
+  const {username, name, email, about, location, website} = userValues
 
   useEffect(() => {
     (async () => {
@@ -41,11 +35,12 @@ const updateProfile = ({token}) => {
   const getUser = async () => {
     try {
       const res = await api('GET', `user/profile/${user.username}`, {}, token)
+      console.log(res)
       if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      return setValues({
-        ...values,
+      return setUserValues({
+        ...userValues,
         username: res.username,
         name: res.name,
         email: res.email,
@@ -59,24 +54,19 @@ const updateProfile = ({token}) => {
     }
   }
 
-  const handleChange = name => e => {
-    setValues({...values, [name]: e.target.value})
-  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const userData = {username, name, email, about, location, website}
 
+  const handleSubmit = async (values) => {
     try {
-      const res = await api('PATCH', `user/account/${user.username}`, userData, token)
+      const res = await api('PATCH', `user/account/${user.username}`, values, token)
       if (res.status >= 400) {
         window.scrollTo(500, 0);
         return flash(res.message, 'danger')
       }
       flash('User updated!', 'success')
       window.scrollTo(500, 0);
-      setValues({
-        ...values,
+      setUserValues({
+        ...userValues,
         username: res.username,
         name: res.name,
         email: res.email,
@@ -99,20 +89,18 @@ const updateProfile = ({token}) => {
     }
   }
 
-  const passwordSubmit = async (e) => {
-    e.preventDefault()
+  const passwordSubmit = async (values) => {
     const data = {
       _id: user._id,
-      password
+      password: values.password
     }
+
     try {
       const res = await api('POST', 'user/update-password', data, token)
       if (res.status !== 200) {
         return flash(res.message, 'warning')
       }
-      setPasswordState({...passwordValues, password: '', confirm: ''})
       return flash(res.message, 'success')
-
     } catch (err) {
       window.scrollTo(500, 0);
       return flash(err.message, 'warning')
@@ -120,54 +108,31 @@ const updateProfile = ({token}) => {
 
   }
 
-  const handlePasswordChange = name => e => {
-    let value = e.target.value
-    let isMatch
-    if (name === 'confirm') {
-      isMatch = value === password
-    }
-
-    setPasswordState({...passwordValues, [name]: value, match: isMatch})
-  }
-
   const form = () => (
-    <form className="mt-4" onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label className="text-muted">Username</label>
-        <input onChange={handleChange('username')} type="text" value={username} className="form-control"/>
-        <small id="usernameHelp" className="form-text text-muted">
+    <Formik
+      enableReinitialize={true}
+      initialValues={{username: username, name: name, email: email, location: location, website: website, about: about}}
+      validationSchema={UserUpdateSchema}
+      onSubmit={async (values) => {
+        await handleSubmit(values)
+      }}
+    >
+      <Form>
+        <FormInput name="username" type="text" label="Username"/>
+        <small id="usernameHelp" className="form-text text-muted mb-2">
           Username must be unique, no spaces. Camelcase is acceptable.
         </small>
-      </div>
-      <div className="form-group">
-        <label className="text-muted">Name</label>
-        <input onChange={handleChange('name')} type="text" value={name} className="form-control"/>
-      </div>
-      <div className="form-group">
-        <label className="text-muted">Email</label>
-        <input type="email" value={email} className="form-control" disabled/>
+        <FormInput name="name" type="text" label="Name"/>
+        <FormInput className="text-muted form-control" value={email} name="email" type="email" label="Email" disabled/>
         <small id="usernameHelp" className="form-text text-muted">
           Emails can't be change.
         </small>
-      </div>
-      <div className="form-group">
-        <label className="text-muted">Location</label>
-        <input onChange={handleChange('location')} type="text" value={location} className="form-control"/>
-      </div>
-      <div className="form-group">
-        <label className="text-muted">Website</label>
-        <input onChange={handleChange('website')} type="text" value={website} className="form-control"/>
-      </div>
-      <div className="form-group">
-        <label className="text-muted">About</label>
-        <textarea onChange={handleChange('about')} type="text" value={about} className="form-control"/>
-      </div>
-      <div>
-        <button type="submit" className="btn btn-primary">
-          Update Profile
-        </button>
-      </div>
-    </form>
+        <FormInput name="location" type="text" label="Location"/>
+        <FormInput name="website" type="text" label="Website"/>
+        <FormTextArea name="about" label="About" />
+        <button type="submit" className={'btn btn-primary'}>Send</button>
+      </Form>
+    </Formik>
   )
   const handleDeleteAccount = async () => {
     const result = window.confirm("Are you sure you want to delete your account?")
@@ -194,29 +159,24 @@ const updateProfile = ({token}) => {
   }
 
   const passwordForm = () => (
-    <form className="mt-4" onSubmit={passwordSubmit}>
-      <div className="form-group">
-        <label className="text-muted">Password</label>
-        <input onChange={handlePasswordChange('password')} type="password" value={password} className="form-control"/>
-        <small id="usernameHelp" className="form-text text-muted">Password must be at least 6 characters and must
+    <Formik
+      initialValues={{password: '', passwordConfirm: ''}}
+      validationSchema={ResetPasswordSchema}
+      onSubmit={async (values, actions) => {
+        await passwordSubmit(values)
+        actions.resetForm({
+          values: {password: '', passwordConfirm: ''}
+        })
+      }}
+    >
+      <Form>
+        <FormInput name="password" type="password" label="Password"/>
+        <small id="usernameHelp" className="form-text text-muted mb-2">Password must be at least 6 characters and must
           contain 1 uppercase and 1 symbol.</small>
-      </div>
-      <div className="form-group">
-        <label className="text-muted">Confirm Password</label>
-        <input onChange={handlePasswordChange('confirm')} type="password" value={confirm} className="form-control"/>
-        {password !== confirm && confirm !== '' && (
-          <div className="mt-3 alert alert-warning" role="alert">
-            {message}
-          </div>
-        )}
-
-      </div>
-      <div>
-        <button type="submit" className="btn btn-primary" disabled={!match}>
-          Update Password
-        </button>
-      </div>
-    </form>
+        <FormInput name="passwordConfirm" type="password" label="Confirm Password"/>
+        <button type="submit" className={'btn btn-primary'}>Update Password</button>
+      </Form>
+    </Formik>
   )
 
   const deleteAccount = () => (
@@ -224,7 +184,7 @@ const updateProfile = ({token}) => {
       <h5 className={"bold"}>Delete my account</h5>
       <hr/>
       <button onClick={handleDeleteAccount} className={'btn btn-danger'}>Delete Account</button>
-      <small className="form-text text-muted">Before deleting your account you must delete all of yours blogs.</small>
+      <small className="form-text text-muted">Before deleting your account you must delete all yours blogs.</small>
     </div>
   )
 

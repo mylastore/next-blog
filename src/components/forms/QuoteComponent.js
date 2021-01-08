@@ -1,101 +1,42 @@
-import {useState} from "react"
 import {api} from "../../actions/api"
+import {Form, Formik} from 'formik'
+import {SupportSchema} from "../../actions/schemas"
+import {FormInput, FormTextArea} from "../Form"
 
 const QuoteComponent = () => {
-  const [values, setValues] = useState({
-    name: '',
-    email: '',
-    message: '',
-    phone: '',
-    company: ''
-  })
-  const {name, email, message, phone, company} = values
 
-  const submit = async e => {
-    e.preventDefault()
-    const data = {
-      name: name,
-      email: email,
-      message: message,
-      phone: phone,
-      company: company
-    }
-    try{
-      const res = await  api('POST', 'admin/quote', data)
-      if(res.status >= 400){
+  const handleSubmit = async values => {
+    try {
+      const res = await api('POST', 'admin/quote', values)
+      if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      setValues({...values, name: '', email: '', phone: '', company: '', message: ''})
       return flash(res.message, 'success')
-    }catch(err){
+    } catch (err) {
       return flash(err.message, 'danger')
     }
   }
 
-  const handleChange = name => e => {
-    setValues({
-      ...values,
-      [name]: e.target.value
-    })
-  }
-
-  const quoteForm = () => {
-    return (
-      <form onSubmit={submit} id="quoteForm">
-        <div className="form-group">
-          <label>Name</label>
-          <input type="text" onChange={handleChange('name')} className="form-control" value={name} required/>
-        </div>
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            onChange={handleChange('email')}
-            className="form-control"
-            value={email}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Phone</label>
-          <input
-            type="tel"
-            onChange={handleChange('phone')}
-            className="form-control"
-            value={phone}
-          />
-          <small className="form-text text-muted">Optional</small>
-        </div>
-        <div className="form-group">
-          <label>Company</label>
-          <input
-            type="text"
-            onChange={handleChange('company')}
-            className="form-control"
-            value={company}
-          />
-          <small className="form-text text-muted">Optional</small>
-        </div>
-        <div className="form-group">
-          <label>Message</label>
-          <textarea
-            onChange={handleChange('message')}
-            className="form-control"
-            value={message}
-            required
-            rows="4"
-          > </textarea>
-        </div>
-        <button className="btn btn-primary">Send Form</button>
-
-      </form>
-    )
-  }
-
   return (
-    <div>
-      {quoteForm()}
-    </div>
+    <Formik
+      initialValues={{name: '', email: '', phone: '', website: '', message: ''}}
+      validationSchema={SupportSchema}
+      onSubmit={async (values, actions) => {
+        await handleSubmit(values)
+        actions.resetForm({
+          values: {name: '', email: '', phone: '', website: '', message: ''}
+        })
+      }}
+    >
+      <Form>
+        <FormInput name="name" type="name" label="Name"/>
+        <FormInput name="email" type="email" label="Email"/>
+        <FormInput name="phone" type="text" label="Phone"/>
+        <FormInput name="website" type="text" label="Website"/>
+        <FormTextArea name="message" label="Message" />
+        <button type="submit" className={'btn btn-primary'}>Send</button>
+      </Form>
+    </Formik>
   )
 
 }

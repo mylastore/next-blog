@@ -15,7 +15,6 @@ const Nav = () => {
     setShow(!show)
   }
 
-
   async function userLogout() {
     try {
       const res = await api('POST', 'user/logout')
@@ -152,7 +151,7 @@ const Nav = () => {
             </li>
             <li className={'nav-item'}>
               <ActiveLink activeClassName="active" href="/quote">
-                <a className="nav-link">Quote</a>
+                <a className="nav-link">Support</a>
               </ActiveLink>
             </li>
           </ul>

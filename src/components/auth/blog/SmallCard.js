@@ -2,22 +2,13 @@ import Link from "next/link"
 import timeAgo from "../../../actions/timeAgo"
 import {IMG} from '../../../config'
 import style from '../../../styles/card.module.css'
-import Image from 'next/image'
 
 const SmallCard = ({b}) => {
   return (
     <div className="card mb-3 mt-3">
       <Link href={`/blog/${b.slug}`}>
         <div className={style.link}>
-
-          <Image
-            className="card-img-top"
-            width={480}
-            height={100}
-            src={`${IMG}/${b.avatar}`}
-            alt={b.title}
-          />
-
+          <img className="card-img-top" src={`${IMG}/${b.avatar}`} alt={b.title} />
           <div className="card-body">
             <div className="card-title line-clamp line-clamp-2"><b>{b.title}</b></div>
             <div className="card-text" dangerouslySetInnerHTML={{__html: b.excerpt}}/>

@@ -1,22 +1,18 @@
 import Layout from "../../components/Layout"
-import {useState} from 'react'
 import {api} from '../../actions/api'
-import isAuth from "../../actions/isAuth";
+import isAuth from "../../actions/isAuth"
+import {Form, Formik} from "formik";
+import {FormInput} from "../../components/Form"
+import {EmailSchema} from "../../actions/schemas";
 
 const forgotPassword = () => {
-  const [values, setValues] = useState({
-    email: ''
-  })
-  const {email} = values
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const submit = async (values) => {
     try {
-      const res = await api('POST', 'user/forgot', {email})
+      const res = await api('POST', 'user/forgot', values)
       if(res.status >= 400){
         return flash(res.message, 'danger')
       }
-      setValues({...values, email: ''})
       return flash(res.message, 'success')
 
     } catch (err) {
@@ -24,19 +20,22 @@ const forgotPassword = () => {
     }
   }
 
-  const handleChange = (e) => {
-    setValues({...values, email: e.target.value})
-  }
-
   const forgotPasswordForm = () => (
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label>Enter your email</label>
-        <input type="email" className="form-control" onChange={handleChange} value={email}
-               placeholder="enter your email here" required/>
-      </div>
-      <button className="btn btn-primary">Send</button>
-    </form>
+      <Formik
+        initialValues={{ email: '' }}
+        validationSchema={EmailSchema}
+        onSubmit={async (values, actions) => {
+          await submit(values)
+          actions.resetForm({
+            values: {email: ''}
+          })
+        }}
+      >
+        <Form>
+          <FormInput name="email" type="email" label="Email"/>
+          <button type="submit" className={'btn btn-primary'}>Send</button>
+        </Form>
+      </Formik>
   )
 
   return (
@@ -45,7 +44,6 @@ const forgotPassword = () => {
         <div className="row mt-5">
           <dev className="col-md-6 offset-md-3">
             <h4>Password Reset</h4>
-            <hr/>
             {forgotPasswordForm()}
           </dev>
         </div>
@@ -56,6 +54,7 @@ const forgotPassword = () => {
 }
 
 export async function getServerSideProps({req}) {
+  //below if user is login redirect him to home page
   return await isAuth(req)
 }
 

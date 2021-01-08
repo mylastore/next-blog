@@ -4,7 +4,7 @@ import Card from "../../components/auth/blog/Card"
 import Head from "next/head"
 import {APP_NAME, DOMAIN, FACEBOOK_ID, IMG} from "../../config"
 
-const Category = ({blogs, category, message, query}) => {
+const Category = ({blogs, category, error, query}) => {
 
   const head = () => (
     <Head>
@@ -24,12 +24,12 @@ const Category = ({blogs, category, message, query}) => {
   )
 
   return (
-    blogs === 'error' ?
+    error ?
       <>
         <Layout>
           <div className="container">
             <div className="alert alert-danger mt-3">
-              {message}
+              {error}
             </div>
           </div>
         </Layout>
@@ -62,19 +62,10 @@ const Category = ({blogs, category, message, query}) => {
 export async function getServerSideProps({query}) {
   try {
     const res = await api('GET', `category/${query.slug}`)
-    if (!res) {
-      return {
-        props: {
-          blogs: 'error',
-          message: 'Oops! Something is wrong. Try later.'
-        }
-      }
-    }
     if (res.status >= 400) {
       return {
         props: {
-          blogs: 'error',
-          message: res.message
+          error: res.message,
         }
       }
     }
@@ -85,13 +76,10 @@ export async function getServerSideProps({query}) {
         query
       }
     }
-
-
   } catch (err) {
     return {
       props: {
-        blogs: 'error',
-        message: err.message
+        error: err.message
       }
     }
   }

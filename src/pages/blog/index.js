@@ -7,7 +7,7 @@ import {IMG, DOMAIN, APP_NAME, FACEBOOK_ID, LIMIT} from "../../config"
 import {withRouter} from "next/router"
 import {useState} from "react"
 
-const Blog = ({blogs, message, categories, tags, size, limit, skip, router, total}) => {
+const Blog = ({blogs, error, categories, tags, size, limit, skip, router, total}) => {
   const head = () => (
     <Head>
       <title>Programming blogs | {APP_NAME}</title>
@@ -43,7 +43,6 @@ const Blog = ({blogs, message, categories, tags, size, limit, skip, router, tota
       setLoadedBlogs([...loadedBlogs, ...res.blogs])
       setSize(res.size)
       return setSkip(toSkip)
-
     } catch (err) {
       return flash(err.message, 'danger')
     }
@@ -68,36 +67,51 @@ const Blog = ({blogs, message, categories, tags, size, limit, skip, router, tota
   }
 
   const showBlogs = () => {
-    return blogs.map((b, i) => {
-      return (
-        <Card key={i} b={b}/>
-      )
-    })
+    if(blogs.length){
+      return blogs.map((b, i) => {
+        return (
+          <Card key={i} b={b}/>
+        )
+      })
+    }
+    return <div className="alert alert-light mt-5 mb-5" role="alert">
+      No blogs found! <br/>Start creating awesome content ;)
+    </div>
   }
 
   const showAllCategories = () => {
-    return categories.map((c, i) => (
-      <Link key={i} href={`/categories/${c.slug}`}>
-        <a className="btn btn-sm btn-primary mr-1 mb-1">{c.name}</a>
-      </Link>
-    ))
+    if(categories.length){
+      return categories.map((c, i) => (
+        <Link key={i} href={`/categories/${c.slug}`}>
+          <a className="btn btn-sm btn-primary mr-1 mb-1">{c.name}</a>
+        </Link>
+      ))
+    }
+    return <div className="alert alert-light mt-2 mb-2" role="alert">
+      No categories found!
+    </div>
   }
 
   const showAllTags = () => {
-    return tags.map((t, i) => (
-      <Link key={i} href={`/tags/${t.slug}`}>
-        <a className="btn btn-sm btn-outline-primary mr-1 mb-1">{t.name}</a>
-      </Link>
-    ))
+    if(tags.length){
+      return tags.map((t, i) => (
+        <Link key={i} href={`/tags/${t.slug}`}>
+          <a className="btn btn-sm btn-outline-primary mr-1 mb-1">{t.name}</a>
+        </Link>
+      ))
+    }
+    return <div className="alert alert-light mt-2 mb-2" role="alert">
+      No tags found!
+    </div>
   }
 
   return (
-    blogs === 'error' ?
+    error ?
       <>
         <Layout>
           <div className="container">
             <div className="alert alert-danger mt-3">
-              {message || 'No blogs yet.'}
+              {error.message || 'No blogs yet.'}
             </div>
           </div>
         </Layout>
@@ -122,8 +136,9 @@ const Blog = ({blogs, message, categories, tags, size, limit, skip, router, tota
               <div className="col-md-8 order-md-1">
                 {showBlogs()}
                 {showMoreBlogs()}
-                <div className="text-center mb-5">
-                  <p><small className="text-center">Total of {total} blogs</small></p>
+                <div className="clearfix text-center mb-5 mt-5">
+                  <hr/>
+                  <p><small className="text-center">{total} blogs</small></p>
                   {loadMoreButton()}
                 </div>
               </div>
@@ -146,22 +161,14 @@ export async function getServerSideProps() {
 
   try {
     const res = await api('POST', 'blogs', iniData)
-    if (!res) {
-      return {
-        props: {
-          blogs: 'error',
-          message: 'Oops! Something is wrong. Try later.'
-        }
-      }
-    }
     if (res.status >= 400) {
       return {
         props: {
-          blogs: 'error',
-          message: res.message
+          error: res
         }
       }
     }
+
     return {
       props: {
         blogs: res.blogs,
@@ -177,8 +184,7 @@ export async function getServerSideProps() {
   } catch (err) {
     return {
       props: {
-        blogs: 'error',
-        message: err.message
+        error: err.message
       }
     }
   }

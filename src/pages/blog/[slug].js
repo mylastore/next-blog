@@ -64,7 +64,7 @@ const singleBlog = ({b, message}) => {
 
   const showRelatedBlogs = () => {
     return related.map((b, i) => (
-      <div className="col-lg-4" key={i}>
+      <div className="col-sm-4" key={i}>
         <article>
           <SmallCard b={b}/>
         </article>
@@ -134,7 +134,6 @@ const singleBlog = ({b, message}) => {
         .center {
           margin: auto;
         }
-
       `}</style>
           </article>
         </Layout>

@@ -74,19 +74,10 @@ const Search = () => {
             position: absolute;
             top: 4px;
             right: 4px;
-            background: #e6e9ec;
-            border-radius: 0;
-            color: #666;
-            border: none;
-            box-shadow: 0px 0px 3px #999;
           }
           .form-group{
             margin-bottom: 0;
           }
-          .customBtn:hover{
-            background: #ddd;
-            box-shadow: 0px 0px 2px #999;
-          }    
         `}
         </style>
       </div>

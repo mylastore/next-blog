@@ -7,7 +7,7 @@ const Quote = () =>{
       <section>
         <div className="container">
           <div className="col-md-6 offset-md-3">
-              <h4 className='mb-4 mt-2'>Need a Custom App?<br/> Tell us what you need.</h4>
+              <h4 className='mb-4 mt-2'>How can we help?</h4>
             <QuoteComponent />
           </div>
         </div>

@@ -24,7 +24,7 @@ export const updateCookie = async (key, value) => {
 
 export const setCookie = async (key, value) => {
   if (process.browser) {
-    await Cookies.set(key, value, {expires: 7})
+    await Cookies.set(key, value, {expires: 7, sameSite: 'lax'})
   }
 }
 
@@ -46,9 +46,8 @@ export const getCookieAsJSON = (key) => {
   }
 }
 
-export const authenticate = async (data, next) => {
-  await setCookie('token', data.token, {expires: 7, sameSite: 'strict'})
-  return next()
+export const authenticate = async (data) => {
+  await setCookie('token', data.token)
 }
 
 export const isAuth = () => {

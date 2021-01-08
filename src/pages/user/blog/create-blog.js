@@ -6,10 +6,10 @@ import 'suneditor/dist/css/suneditor.min.css'
 import handleAuthSSR from "../../../actions/authSSR"
 import AuthComponent from "../../../components/auth/AuthComponent"
 import dynamic from "next/dynamic"
+
 const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
 
 const CreateBlog = ({token, router}) => {
-  const [visibility, setVisibility] = useState(false)
   const [checkedCat, setCheckedCat] = useState([])
   const [checkedTag, setCheckedTag] = useState([])
   const [categories, setCategories] = useState([])
@@ -37,7 +37,6 @@ const CreateBlog = ({token, router}) => {
       if (res.status >= 400) {
         return flash(res.message, 'warning')
       }
-      setVisibility(true)
       setCategories(res)
     } catch (err) {
       return flash(err.message, 'danger')
@@ -152,14 +151,14 @@ const CreateBlog = ({token, router}) => {
     const formData = new FormData()
     formData.append('avatar', files[0])
     apiForm('POST', 'blog/images', formData, token)
-      .then((res)=>{
+      .then((res) => {
         if (res && res.status >= 400) {
           uploadHandler()
           return flash(res.message)
         }
         uploadHandler(res)
       })
-      .catch((err)=>{
+      .catch((err) => {
         return flash(err)
       })
   }
@@ -204,41 +203,46 @@ const CreateBlog = ({token, router}) => {
       <section>
         <div className="container-fluid">
           <AuthComponent>
-            <h2>Create Blog</h2>
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-md-8">
-                  {blogForm()}
-                </div>
-                <div className="col-md-4">
-                  <h5>Categories</h5>
-                  <ul className='scroll'>{showCategories()}</ul>
-                  <hr/>
-                  <h5>Tags</h5>
-                  <ul className='scroll'>{showTags()}</ul>
-                  <hr/>
-                  <h5>Feature Image</h5>
-                  <p><small className="text-muted">Max size 5mb</small></p>
-                  <label className="btn btn-outline-info">
-                    Upload Image
-                    <input onChange={handleChange('avatar')} type="file" name="avatar" accept="image/png, image/jpeg image/webp"
-                           hidden/>
-                  </label>
-                  <br/>
-                  <img id="output" alt="image-preview" style={{width: '100px', height: 'auto', display: showImg ? '' : 'none'}}/>
+            {categories.length > 0 && tags.length > 0 ?
+              <div>
+                <h2>Create Blog</h2>
+                <div className="container-fluid">
+                  <div className="row">
+                    <div className="col-md-8">
+                      {blogForm()}
+                    </div>
+                    <div className="col-md-4">
+                      <h5>Categories</h5>
+                      <ul className='scroll'>{showCategories()}</ul>
+                      <hr/>
+                      <h5>Tags</h5>
+                      <ul className='scroll'>{showTags()}</ul>
+                      <hr/>
+                      <h5>Feature Image</h5>
+                      <p><small className="text-muted">Max size 5mb</small></p>
+                      <label className="btn btn-outline-info">
+                        Select Image
+                        <input onChange={handleChange('avatar')} type="file" name="avatar"
+                               accept="image/png, image/jpeg image/webp"
+                               hidden/>
+                      </label>
+                      <br/>
+                      <img id="output" alt="image-preview"
+                           style={{width: '100px', height: 'auto', display: showImg ? '' : 'none'}}/>
+                    </div>
+                  </div>
+
+                  <style jsx>{`
+                .scroll{
+                  max-height: 200px;
+                  overflow-y: auto;
+                  padding-left: 10px;
+                }
+              `}</style>
                 </div>
               </div>
-
-              <style jsx>{`
-        .scroll{
-          max-height: 200px;
-          overflow-y: auto;
-          padding-left: 10px;
-        }
-      `}</style>
-
-            </div>
-
+              : <div><strong>No categories or tags found!</strong> <br/>Create a category and tag in order to create your first blog.</div>
+            }
           </AuthComponent>
         </div>
       </section>
