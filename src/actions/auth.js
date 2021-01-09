@@ -15,13 +15,6 @@ export const logout = async () => {
   await removeCookie('rememberMe')
 }
 
-export const updateCookie = async (key, value) => {
-  if (process.browser) {
-    await Cookies.remove(key)
-    await Cookies.set(key, value, {expires: 7})
-  }
-}
-
 export const setCookie = async (key, value) => {
   if (process.browser) {
     await Cookies.set(key, value, {expires: 7, sameSite: 'lax'})

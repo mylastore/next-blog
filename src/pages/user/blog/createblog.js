@@ -6,6 +6,10 @@ import 'suneditor/dist/css/suneditor.min.css'
 import handleAuthSSR from "../../../actions/authSSR"
 import AuthComponent from "../../../components/auth/AuthComponent"
 import dynamic from "next/dynamic"
+import {Form, Formik} from 'formik'
+import {FormCheckbox, FormInput} from "../../../components/Form"
+import {titleSchema} from "../../../actions/schemas"
+import * as Yup from "yup";
 
 const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
 
@@ -17,10 +21,9 @@ const CreateBlog = ({token, router}) => {
   const [values, setValues] = useState({
     formData: '',
     editorContent: '',
-    title: '',
     showImg: false
   })
-  const {showImg, formData, title, editorContent} = values
+  const {showImg, formData, editorContent} = values
 
   useEffect(() => {
     (async () => {
@@ -55,10 +58,10 @@ const CreateBlog = ({token, router}) => {
     }
   }
 
-  const handleChange = name => e => {
+  const handleFeatureImage = name => e => {
     const value = name === 'avatar' ? e.target.files[0] : e.target.value
     formData.set(name, value)
-    setValues({...values, [name]: value, formData})
+    //setValues({...values, [name]: value, formData})
 
     if (e.target.files) {
       setValues({...values, showImg: true})
@@ -71,60 +74,66 @@ const CreateBlog = ({token, router}) => {
     }
   }
 
-  const handleCatChecked = c => () => {
-    const check = checkedCat.indexOf(c)
-    const all = [...checkedCat]
+  // const handleCatChecked = c => () => {
+  //   const check = checkedCat.indexOf(c)
+  //   const all = [...checkedCat]
+  //
+  //   if (check === -1) {
+  //     all.push(c)
+  //   } else {
+  //     all.splice(check, 1)
+  //   }
+  //   setCheckedCat(all)
+  //   formData.set('categories', all)
+  // }
+  //
+  // const handleCategories = (values) => {
+  //   formData.set('categories', values)
+  // }
+  //
+  // const handleTagChecked = t => () => {
+  //   const check = checkedTag.indexOf(t)
+  //   const all = [...checkedTag]
+  //
+  //   if (check === -1) {
+  //     all.push(t)
+  //   } else {
+  //     all.splice(check, 1)
+  //   }
+  //   setCheckedTag(all)
+  //   formData.set('tags', all)
+  // }
 
-    if (check === -1) {
-      all.push(c)
-    } else {
-      all.splice(check, 1)
-    }
-    setCheckedCat(all)
-    formData.set('categories', all)
-  }
+  // const showCategories = () => {
+  //   return (
+  //     categories && categories.map((c, i) => (
+  //       <FormCheckbox key={i} name={'categories'} value={c._id}>{c.name}</FormCheckbox>
+  //
+  //       // <li key={i} className="list-unstyled">
+  //       //   <label className="form-check-label" style={{cursor: 'pointer'}}>
+  //       //     <input onChange={handleCatChecked(c._id)} type="checkbox" className="mr-2"/>
+  //       //     {c.name}
+  //       //   </label>
+  //       // </li>
+  //
+  //     ))
+  //   )
+  // }
 
-  const handleTagChecked = t => () => {
-    const check = checkedTag.indexOf(t)
-    const all = [...checkedTag]
+  // const showTags = () => {
+  //   return (
+  //     tags && tags.map((t, i) => (
+  //       <li key={i} className="list-unstyled">
+  //         <label className="form-check-label" style={{cursor: 'pointer'}}>
+  //           <input onChange={handleTagChecked(t._id)} type="checkbox" className="mr-2"/>
+  //           {t.name}
+  //         </label>
+  //       </li>
+  //     ))
+  //   )
+  // }
 
-    if (check === -1) {
-      all.push(t)
-    } else {
-      all.splice(check, 1)
-    }
-    setCheckedTag(all)
-    formData.set('tags', all)
-  }
-
-  const showCategories = () => {
-    return (
-      categories && categories.map((c, i) => (
-        <li key={i} className="list-unstyled">
-          <label className="form-check-label" style={{cursor: 'pointer'}}>
-            <input onChange={handleCatChecked(c._id)} type="checkbox" className="mr-2"/>
-            {c.name}
-          </label>
-        </li>
-      ))
-    )
-  }
-
-  const showTags = () => {
-    return (
-      tags && tags.map((t, i) => (
-        <li key={i} className="list-unstyled">
-          <label className="form-check-label" style={{cursor: 'pointer'}}>
-            <input onChange={handleTagChecked(t._id)} type="checkbox" className="mr-2"/>
-            {t.name}
-          </label>
-        </li>
-      ))
-    )
-  }
-
-  const saveBlog = async e => {
-    e.preventDefault()
+  const saveBlog = async () => {
     try {
       const res = await apiForm('POST', 'blog', formData, token)
       if (res.status >= 400) {
@@ -133,7 +142,6 @@ const CreateBlog = ({token, router}) => {
       setValues({
         ...values,
         showImg: false,
-        title: '',
         formData: '',
         editorContent: ''
       })
@@ -143,8 +151,7 @@ const CreateBlog = ({token, router}) => {
     }
   }
 
-  const handleEditorContent = e => {
-    console.log('editor event',e)
+  const handleContent = e => {
     formData.set('content', e)
   }
 
@@ -169,7 +176,7 @@ const CreateBlog = ({token, router}) => {
       onImageUploadBefore={handleImageUploadBefore}
       placeholder={'Write something amazing...'}
       setContents={editorContent}
-      onChange={handleEditorContent}
+      onChange={handleContent}
       setOptions={{
         height: 250,
         buttonList: [['undo', 'redo'],
@@ -184,18 +191,49 @@ const CreateBlog = ({token, router}) => {
 
   const blogForm = () => {
     return (
-      <form onSubmit={saveBlog} className={'mb-4 mt-4'}>
-        <div className="form-group">
-          <label className="text-muted">Title</label>
-          <input type="text" className="form-control" value={title} onChange={handleChange('title')}/>
-        </div>
-        <div className="form-group">
-          {sunEditorHtml()}
-        </div>
-        <div>
-          <button type="submit" className="btn btn-primary">Publish</button>
-        </div>
-      </form>
+      <Formik
+        initialValues={{title: '', categories: [], tags: []}}
+        validationSchema={
+          Yup.object().shape({
+            title: Yup.string().min(2).max(60).required('Required'),
+          })
+        }
+        onSubmit={async (values, actions) => {
+          console.log(values)
+          formData.set('tags', values.tags)
+          formData.set('categories', values.categories)
+          formData.set('title', values.title)
+          await saveBlog()
+          actions.resetForm({
+            values: {title: '', categories: [], tags: []}
+          })
+        }}
+      >
+        <Form className={'mb-4 mt-4'}>
+          <FormInput name="title" type="text" label="Title"/>
+          <div className="row">
+            <div className="col-md-6">
+              {categories && categories.map((c, i) => (
+                <FormCheckbox key={i} name={'categories'} value={c._id}>{c.name}</FormCheckbox>
+              ))
+              }
+            </div>
+            <div className="col-md-6">
+              {tags && tags.map((t, i) => (
+                <FormCheckbox key={i} name={'tags'} value={t._id}>{t.name}</FormCheckbox>
+              ))
+              }
+            </div>
+          </div>
+
+          <div className="form-group">
+            {sunEditorHtml()}
+          </div>
+          <button type="submit" className={'btn btn-primary'}>Send</button>
+        </Form>
+      </Formik>
+
+
     )
   }
 
@@ -214,16 +252,16 @@ const CreateBlog = ({token, router}) => {
                     </div>
                     <div className="col-md-4">
                       <h5>Categories</h5>
-                      <ul className='scroll'>{showCategories()}</ul>
+                      {/*<ul className='scroll'>{showCategories()}</ul>*/}
                       <hr/>
                       <h5>Tags</h5>
-                      <ul className='scroll'>{showTags()}</ul>
+                      {/*<ul className='scroll'>{showTags()}</ul>*/}
                       <hr/>
                       <h5>Feature Image</h5>
                       <p><small className="text-muted">Max size 5mb</small></p>
                       <label className="btn btn-outline-info">
                         Select Image
-                        <input onChange={handleChange('avatar')} type="file" name="avatar"
+                        <input onChange={handleFeatureImage('avatar')} type="file" name="avatar"
                                accept="image/png, image/jpeg image/webp"
                                hidden/>
                       </label>
@@ -242,7 +280,9 @@ const CreateBlog = ({token, router}) => {
               `}</style>
                 </div>
               </div>
-              : <div><strong>No categories or tags found!</strong> <br/>Create a category and tag in order to create your first blog.</div>
+              :
+              <div><strong>No categories or tags found!</strong> <br/>Create a category and tag in order to create your
+                first blog.</div>
             }
           </AuthComponent>
         </div>

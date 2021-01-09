@@ -1,4 +1,4 @@
-import {Form, useField} from "formik"
+import {useField} from "formik"
 
 export const FormInput = ({label, helper, ...props}) => {
   const [field, meta] = useField(props)
@@ -37,8 +37,8 @@ export const FormCheckbox = ({children, ...props}) => {
   const [field, meta] = useField({...props, type: 'checkbox'})
   return (
     <div className={'form-check'}>
-      <input type="checkbox" id="flexCheckDefault" className="form-check-input" {...field} {...props} />
-      <label className="checkbox" for="flexCheckDefault">
+      <input className="form-check-input" type="checkbox" id={props.value} {...field} {...props} />
+      <label className="checkbox" for={props.value}>
         {children}
       </label>
       {meta.touched && meta.error ? (

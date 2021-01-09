@@ -1,6 +1,7 @@
 import Flash from '../components/Flash'
 import Link from "next/link"
-import Nav from "./Nav";
+import Nav from "./Nav"
+import {APP_NAME} from "../config";
 
 const d = new Date();
 const currentYear = d.getFullYear();
@@ -19,7 +20,7 @@ const Layout = ({children}) => {
             <a className={'noLink'}>Need a Custom App?</a>
           </Link>
           <p>
-            © {currentYear} - My LA Store - <Link href="/privacy"><a className={'noLink'}>Privacy Policy</a></Link>
+            © {currentYear} - {APP_NAME}- <Link href="/privacy"><a className={'noLink'}>Privacy Policy</a></Link>
           </p>
         </div>
       </footer>

@@ -1,7 +1,6 @@
-import {useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {getCookie, isAuth} from "../../../actions/auth"
 import {api} from '../../../actions/api'
-import style from '../../../styles/Admin.module.css'
 import Link from "next/link"
 
 const AllBlogs = () => {
@@ -29,7 +28,6 @@ const AllBlogs = () => {
         return flash(res.message, 'danger')
       }
       return setBlogs(res)
-
     } catch (err) {
       return flash(err.message, 'danger')
     }
@@ -48,7 +46,6 @@ const AllBlogs = () => {
     } catch (err) {
       return flash(err.message, 'danger')
     }
-
   }
 
   const confirmDelete = async (slug) => {
@@ -62,15 +59,39 @@ const AllBlogs = () => {
     if (blogs.length) {
       return blogs.map((b, i) => {
         return (
-          <div key={i} className={`col-md-12 mb-1 mt-1 ${style.customTable} `}>
+          <div key={i} className={`col-md-12 mb-1 mt-1 customTable`}>
             <Link href={`/blog/${b.slug}`}>
-              <a className="noLink float-left">{b.title} <span
-                className="small mark">Author: {b.postedBy.username}</span></a>
+              <a className="noLink float-left">{b.title} </a>
             </Link>
+            <br/>
+            {b.categories.map((c, i) => {
+              return (
+                <span key={i} className={'badge badge-primary mr-2'}>{c.name}</span>
+              )
+            })
+            }
+            {b.tags.map((t, i) => {
+              return (
+                <span key={i} className={'badge badge-light mr-2'}>{t.name}</span>
+              )
+            })
+            }
             <div className="float-right">
               {updateButton(b)}&nbsp;
               <button className="btn btn-sm btn-outline-danger" onClick={() => confirmDelete(b.slug)}>Delete</button>
             </div>
+            <style jsx>{`
+              .badge-light{
+                border: solid 1px #007bff;
+                color: #007bff;
+                background: white;
+              }
+              .customTable{
+                  border-top: solid 1px #e5e5e5;
+                  width: 100%;
+                  padding: 10px 0;
+              }
+            `}</style>
           </div>
         )
       })
@@ -78,18 +99,13 @@ const AllBlogs = () => {
     return (
       <div><p>No Blogs Yet!</p></div>
     )
-
   }
 
   return (
-    <>
-      <div className="row">
-        <h2>Blog Management</h2>
-        <div className="col-md-12">
-        </div>
-        {showBlogs()}
-      </div>
-    </>
+    <div className="row">
+      <h2>Blog Management</h2>
+      {showBlogs()}
+    </div>
   )
 }
 

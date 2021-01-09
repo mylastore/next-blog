@@ -1,4 +1,4 @@
-import * as Yup from "yup";
+import * as Yup from "yup"
 
 const phoneRegExp = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/
 const passwordRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(.{8,50})$/
@@ -12,6 +12,7 @@ export const passwordValidation = Yup.string()
 export const emailValidation = Yup.string().email('Invalid email').required('Required')
 export const nameValidation = Yup.string().min(2).max(32).required('Required')
 export const locationValidation = Yup.string().min(2).max(60)
+export const titleValidation = Yup.string().min(2).max(60).required('Required')
 export const userNameValidation = Yup.string().min(2).max(32).required('Required')
 export const messageValidation = Yup.string().min(2).max(1000).required('Required')
 export const categoryTagValidation = Yup.string().min(2).max(60).required('Required')
@@ -40,6 +41,10 @@ export const RegisterSchema = Yup.object().shape({
 
 export const EmailSchema = Yup.object().shape({
   email: emailValidation
+})
+
+export const titleSchema = Yup.object().shape({
+  title: titleValidation
 })
 
 export const CategoryTagSchema = Yup.object().shape({
