@@ -21,10 +21,9 @@ const blogPreview = ({b, message}) => {
 
       :
       <Layout>
-        <article>
+        <section>
           <div className="container-fluid">
             <AuthComponent>
-            <section>
               <div className="clearfix">
                 <div className="alert alert-info" role="alert">
                   <h5 className={'text-center'}>Blog Preview</h5>
@@ -38,7 +37,6 @@ const blogPreview = ({b, message}) => {
                   src={`${IMG}/${b.avatar}`}
                   alt={b.title}
                 />
-
               </div>
               <Link href={`/public/${b.postedBy.username}`}>
                 <a className="noLink">
@@ -46,7 +44,6 @@ const blogPreview = ({b, message}) => {
                     by {b.postedBy.name} | {timeAgo(b.createdAt)}</p>
                 </a>
               </Link>
-            </section>
             <section>
               {showCategories(b)}
               {showTags(b)}
@@ -56,16 +53,13 @@ const blogPreview = ({b, message}) => {
             </section>
             </AuthComponent>
           </div>
-
           <style jsx>{`
-        .center {
-          margin: auto;
-        }
-
-      `}</style>
-        </article>
+            .center {
+              margin: auto;
+            }
+          `}</style>
+        </section>
       </Layout>
-
   )
 }
 

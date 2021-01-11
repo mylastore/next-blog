@@ -8,14 +8,11 @@ import AuthComponent from "../../../components/auth/AuthComponent"
 import dynamic from "next/dynamic"
 import {Form, Formik} from 'formik'
 import {FormCheckbox, FormInput} from "../../../components/Form"
-import {titleSchema} from "../../../actions/schemas"
 import * as Yup from "yup";
 
 const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
 
 const CreateBlog = ({token, router}) => {
-  const [checkedCat, setCheckedCat] = useState([])
-  const [checkedTag, setCheckedTag] = useState([])
   const [categories, setCategories] = useState([])
   const [tags, setTags] = useState([])
   const [values, setValues] = useState({
@@ -73,66 +70,6 @@ const CreateBlog = ({token, router}) => {
       reader.readAsDataURL(e.target.files[0])
     }
   }
-
-  // const handleCatChecked = c => () => {
-  //   const check = checkedCat.indexOf(c)
-  //   const all = [...checkedCat]
-  //
-  //   if (check === -1) {
-  //     all.push(c)
-  //   } else {
-  //     all.splice(check, 1)
-  //   }
-  //   setCheckedCat(all)
-  //   formData.set('categories', all)
-  // }
-  //
-  // const handleCategories = (values) => {
-  //   formData.set('categories', values)
-  // }
-  //
-  // const handleTagChecked = t => () => {
-  //   const check = checkedTag.indexOf(t)
-  //   const all = [...checkedTag]
-  //
-  //   if (check === -1) {
-  //     all.push(t)
-  //   } else {
-  //     all.splice(check, 1)
-  //   }
-  //   setCheckedTag(all)
-  //   formData.set('tags', all)
-  // }
-
-  // const showCategories = () => {
-  //   return (
-  //     categories && categories.map((c, i) => (
-  //       <FormCheckbox key={i} name={'categories'} value={c._id}>{c.name}</FormCheckbox>
-  //
-  //       // <li key={i} className="list-unstyled">
-  //       //   <label className="form-check-label" style={{cursor: 'pointer'}}>
-  //       //     <input onChange={handleCatChecked(c._id)} type="checkbox" className="mr-2"/>
-  //       //     {c.name}
-  //       //   </label>
-  //       // </li>
-  //
-  //     ))
-  //   )
-  // }
-
-  // const showTags = () => {
-  //   return (
-  //     tags && tags.map((t, i) => (
-  //       <li key={i} className="list-unstyled">
-  //         <label className="form-check-label" style={{cursor: 'pointer'}}>
-  //           <input onChange={handleTagChecked(t._id)} type="checkbox" className="mr-2"/>
-  //           {t.name}
-  //         </label>
-  //       </li>
-  //     ))
-  //   )
-  // }
-
   const saveBlog = async () => {
     try {
       const res = await apiForm('POST', 'blog', formData, token)
@@ -192,10 +129,11 @@ const CreateBlog = ({token, router}) => {
   const blogForm = () => {
     return (
       <Formik
+        enableReinitialize={true}
         initialValues={{title: '', categories: [], tags: []}}
         validationSchema={
           Yup.object().shape({
-            title: Yup.string().min(2).max(60).required('Required'),
+            title: Yup.string().min(2).max(60).required('Required')
           })
         }
         onSubmit={async (values, actions) => {
@@ -203,37 +141,56 @@ const CreateBlog = ({token, router}) => {
           formData.set('tags', values.tags)
           formData.set('categories', values.categories)
           formData.set('title', values.title)
-          await saveBlog()
-          actions.resetForm({
-            values: {title: '', categories: [], tags: []}
-          })
+          const res = await saveBlog()
+          if(res.status <= 400){
+            actions.resetForm({
+              values: {title: '', categories: [], tags: []}
+            })
+          }
         }}
       >
         <Form className={'mb-4 mt-4'}>
-          <FormInput name="title" type="text" label="Title"/>
           <div className="row">
-            <div className="col-md-6">
-              {categories && categories.map((c, i) => (
-                <FormCheckbox key={i} name={'categories'} value={c._id}>{c.name}</FormCheckbox>
-              ))
-              }
+            <div className="col-md-8">
+              <FormInput name="title" type="text" label="Title"/>
+              <div className="form-group">
+                {sunEditorHtml()}
+              </div>
             </div>
-            <div className="col-md-6">
-              {tags && tags.map((t, i) => (
-                <FormCheckbox key={i} name={'tags'} value={t._id}>{t.name}</FormCheckbox>
-              ))
-              }
+            <div className="col-md-4">
+              <h5>Categories</h5>
+             <hr/>
+              <div className="scroll mb-2">
+                {categories && categories.map((c, i) => (
+                  <FormCheckbox key={i} name="categories" value={c._id}>{c.name}</FormCheckbox>
+                ))
+                }
+              </div>
+              <h5>Tags</h5>
+              <hr/>
+              <div className="scroll">
+                {tags && tags.map((t, i) => (
+                  <FormCheckbox key={i} name="tags" value={t._id}>{t.name}</FormCheckbox>
+                ))
+                }
+              </div>
+              <hr/>
+              <h5>Feature Image</h5>
+              <p><small className="text-muted">Max size 5mb</small></p>
+              <label className="btn btn-outline-info">
+                Select Image
+                <input onChange={handleFeatureImage('avatar')} type="file" name="avatar"
+                       accept="image/png, image/jpeg image/webp"
+                       hidden/>
+              </label>
+              <br/>
+              <img id="output" alt="image-preview"
+                   style={{width: '100px', height: 'auto', display: showImg ? '' : 'none'}}/>
             </div>
           </div>
-
-          <div className="form-group">
-            {sunEditorHtml()}
-          </div>
-          <button type="submit" className={'btn btn-primary'}>Send</button>
+          <button type="submit" className={'btn btn-primary'}>Save</button>
         </Form>
       </Formik>
-
-
     )
   }
 
@@ -246,31 +203,7 @@ const CreateBlog = ({token, router}) => {
               <div>
                 <h2>Create Blog</h2>
                 <div className="container-fluid">
-                  <div className="row">
-                    <div className="col-md-8">
-                      {blogForm()}
-                    </div>
-                    <div className="col-md-4">
-                      <h5>Categories</h5>
-                      {/*<ul className='scroll'>{showCategories()}</ul>*/}
-                      <hr/>
-                      <h5>Tags</h5>
-                      {/*<ul className='scroll'>{showTags()}</ul>*/}
-                      <hr/>
-                      <h5>Feature Image</h5>
-                      <p><small className="text-muted">Max size 5mb</small></p>
-                      <label className="btn btn-outline-info">
-                        Select Image
-                        <input onChange={handleFeatureImage('avatar')} type="file" name="avatar"
-                               accept="image/png, image/jpeg image/webp"
-                               hidden/>
-                      </label>
-                      <br/>
-                      <img id="output" alt="image-preview"
-                           style={{width: '100px', height: 'auto', display: showImg ? '' : 'none'}}/>
-                    </div>
-                  </div>
-
+                  {blogForm()}
                   <style jsx>{`
                 .scroll{
                   max-height: 200px;
