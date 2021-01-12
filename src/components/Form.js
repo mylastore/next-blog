@@ -37,8 +37,8 @@ export const FormCheckbox = ({children, ...props}) => {
   const [field, meta] = useField({...props, type: 'checkbox'})
   return (
     <div className={'form-check'}>
-      <input className="form-check-input" type="checkbox" id={props.value} {...field} {...props} />
-      <label className="checkbox" for={props.value}>
+      <input className="form-check-input" type="checkbox" id={props.id} {...field} {...props} />
+      <label className="checkbox" for={props.id}>
         {children}
       </label>
       {meta.touched && meta.error ? (
@@ -52,7 +52,7 @@ const FormSelect = ({label, ...props}) => {
   const [field, meta] = useField(props)
   return (
     <div>
-      <label htmlFor={props.id || props.name} aria-label={props.id || props.name}>{label}</label>
+      <label for={props.id || props.name} aria-label={props.id || props.name}>{label}</label>
       <select className={'form-select'} {...field} {...props} />
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
