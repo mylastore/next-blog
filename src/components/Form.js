@@ -11,7 +11,7 @@ export const FormInput = ({label, helper, ...props}) => {
         <small id="usernameHelp" className="form-text text-muted">
           {helper}
         </small>
-       : null }
+        : null}
       {meta.touched && meta.error ? (
         <div className="error alert alert-danger mt-2">{meta.error}</div>
       ) : null}
@@ -33,14 +33,12 @@ export const FormTextArea = ({label, ...props}) => {
   )
 }
 
-export const FormCheckbox = ({children, ...props}) => {
+export const FormCheckbox = ({...props}) => {
   const [field, meta] = useField({...props, type: 'checkbox'})
   return (
     <div className={'form-check'}>
-      <input className="form-check-input" type="checkbox" id={props.value} {...field} {...props} />
-      <label className="checkbox" for={props.value}>
-        {children}
-      </label>
+      <input className="form-check-input" type="checkbox" {...field} {...props} />
+      <label className="checkbox" for={props.id}>{props.label}</label>
       {meta.touched && meta.error ? (
         <div className="error alert alert-danger mt-2">{meta.error}</div>
       ) : null}

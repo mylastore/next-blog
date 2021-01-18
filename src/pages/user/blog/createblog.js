@@ -15,19 +15,19 @@ const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
 const CreateBlog = ({token, router}) => {
   const [categories, setCategories] = useState([])
   const [tags, setTags] = useState([])
-  const [values, setValues] = useState({
+  const [formValues, setFormValues] = useState({
     formData: '',
     editorContent: '',
     showImg: false
   })
-  const {showImg, formData, editorContent} = values
+  const {showImg, formData, editorContent} = formValues
 
   useEffect(() => {
     (async () => {
       await initCategories()
       await initTags()
     })()
-    setValues({...values, formData: new FormData()})
+    setFormValues({...formValues, formData: new FormData()})
   }, [router])
 
 
@@ -58,10 +58,10 @@ const CreateBlog = ({token, router}) => {
   const handleFeatureImage = name => e => {
     const value = name === 'avatar' ? e.target.files[0] : e.target.value
     formData.set(name, value)
-    //setValues({...values, [name]: value, formData})
+    //setFormValues({...formValues, [name]: value, formData})
 
     if (e.target.files) {
-      setValues({...values, showImg: true})
+      setFormValues({...formValues, showImg: true})
       let reader = new FileReader();
       reader.onload = function () {
         const output = document.getElementById('output');
@@ -76,8 +76,8 @@ const CreateBlog = ({token, router}) => {
       if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
-      setValues({
-        ...values,
+      setFormValues({
+        ...formValues,
         showImg: false,
         formData: '',
         editorContent: ''
@@ -126,73 +126,72 @@ const CreateBlog = ({token, router}) => {
     />
   }
 
-  const blogForm = () => {
-    return (
-      <Formik
-        enableReinitialize={true}
-        initialValues={{title: '', categories: [], tags: []}}
-        validationSchema={
-          Yup.object().shape({
-            title: Yup.string().min(2).max(60).required('Required')
+  const blogForm = () => (
+    <Formik
+      enableReinitialize={true}
+      initialValues={{title: '', published: false, categories: [], tags: []}}
+      validationSchema={
+        Yup.object().shape({
+          title: Yup.string().min(2).max(60).required('Required')
+        })
+      }
+      onSubmit={async (values, actions) => {
+        await formData.set('tags', values.tags)
+        await formData.set('categories', values.categories)
+        await formData.set('title', values.title)
+        await formData.set('published', values.published)
+        const res = await saveBlog()
+        if (res.status <= 400) {
+          actions.resetForm({
+            values: {title: '', categories: [], tags: []}
           })
         }
-        onSubmit={async (values, actions) => {
-          console.log(values)
-          formData.set('tags', values.tags)
-          formData.set('categories', values.categories)
-          formData.set('title', values.title)
-          const res = await saveBlog()
-          if(res.status <= 400){
-            actions.resetForm({
-              values: {title: '', categories: [], tags: []}
-            })
-          }
-        }}
-      >
-        <Form className={'mb-4 mt-4'}>
-          <div className="row">
-            <div className="col-md-8">
-              <FormInput name="title" type="text" label="Title"/>
-              <div className="form-group">
-                {sunEditorHtml()}
-              </div>
+      }}
+    >
+      <Form className={'mb-4 mt-4'}>
+        <div className="row">
+          <div className="col-md-8">
+            <FormInput name="title" type="text" label="Title"/>
+            <div className="form-group">
+              {sunEditorHtml()}
             </div>
-            <div className="col-md-4">
-              <h5>Categories</h5>
-             <hr/>
-              <div className="scroll mb-2">
-                {categories && categories.map((c, i) => (
-                  <FormCheckbox key={i} name="categories" value={c._id}>{c.name}</FormCheckbox>
-                ))
-                }
-              </div>
-              <h5>Tags</h5>
-              <hr/>
-              <div className="scroll">
-                {tags && tags.map((t, i) => (
-                  <FormCheckbox key={i} name="tags" value={t._id}>{t.name}</FormCheckbox>
-                ))
-                }
-              </div>
-              <hr/>
-              <h5>Feature Image</h5>
-              <p><small className="text-muted">Max size 5mb</small></p>
-              <label className="btn btn-outline-info">
-                Select Image
-                <input onChange={handleFeatureImage('avatar')} type="file" name="avatar"
-                       accept="image/png, image/jpeg image/webp"
-                       hidden/>
-              </label>
-              <br/>
-              <img id="output" alt="image-preview"
-                   style={{width: '100px', height: 'auto', display: showImg ? '' : 'none'}}/>
-            </div>
+            <FormCheckbox name="published" id="published" label={'Published'}/>
+            <button type="submit" className={'btn btn-primary'}>Save</button>
           </div>
-          <button type="submit" className={'btn btn-primary'}>Save</button>
-        </Form>
-      </Formik>
-    )
-  }
+          <div className="col-md-4">
+            <h5>Categories</h5>
+            <hr/>
+            <div className="scroll mb-2">
+              {categories && categories.map((c, i) => (
+                <FormCheckbox key={i} name="categories" label={c.name} id={c._id} value={c._id}/>
+              ))
+              }
+            </div>
+            <h5>Tags</h5>
+            <hr/>
+            <div className="scroll">
+              {tags && tags.map((t, i) => (
+                <FormCheckbox key={i} name="tags" label={t.name} id={t._id} value={t._id}/>
+              ))
+              }
+            </div>
+            <hr/>
+            <h5>Feature Image</h5>
+            <p><small className="text-muted">Max size 5mb</small></p>
+            <label className="btn btn-outline-info">
+              Select Image
+              <input onChange={handleFeatureImage('avatar')} type="file" name="avatar"
+                     accept="image/png, image/jpeg image/webp"
+                     hidden/>
+            </label>
+            <br/>
+            <img id="output" alt="image-preview"
+                 style={{width: '100px', height: 'auto', display: showImg ? '' : 'none'}}/>
+          </div>
+        </div>
+      </Form>
+    </Formik>
+  )
 
   return (
     <Layout>

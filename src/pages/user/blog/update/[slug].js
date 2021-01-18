@@ -7,6 +7,7 @@ import {api, apiForm} from "../../../../actions/api"
 import {IMG} from "../../../../config"
 import 'suneditor/dist/css/suneditor.min.css'
 import dynamic from "next/dynamic"
+
 const SunEditor = dynamic(() => import('suneditor-react'), {ssr: false})
 
 const UpdateBlog = ({router, token}) => {
@@ -20,16 +21,14 @@ const UpdateBlog = ({router, token}) => {
     formData: '',
     title: '',
     avatar: '',
+    published: false,
     imgID: '',
     content: ''
   })
-  const {formData, title, avatar, imgID} = values
+  const {formData, title, published, avatar, imgID} = values
 
   useEffect(() => {
-
     (async () => {
-      //imgInput = document.getElementById('img-input')
-
       await initBlog()
       await initCategories()
       await initTags()
@@ -41,11 +40,19 @@ const UpdateBlog = ({router, token}) => {
     if (slug) {
       try {
         const res = await api('GET', `getblog/${slug}`)
+        console.log('res ',res)
         if (res.status >= 400) {
           return flash(res.message, 'danger')
         }
         setVisibility(true)
-        setValues({...values, title: res.title, avatar: res.avatar, imgID: res.imgID, formData: new FormData()})
+        setValues({
+          ...values,
+          title: res.title,
+          published: res.published,
+          avatar: res.avatar,
+          imgID: res.imgID,
+          formData: new FormData()
+        })
         setEditorContent(res.content)
         setCategoriesArray(res.categories)
         return setTagsArray(res.tags)
@@ -58,7 +65,7 @@ const UpdateBlog = ({router, token}) => {
 
   const setCategoriesArray = blogCategories => {
     let ca = [];
-    blogCategories.map((c, i) => {
+    blogCategories.map((c) => {
       ca.push(c._id);
     })
     setCheckedCat(ca)
@@ -128,6 +135,11 @@ const UpdateBlog = ({router, token}) => {
   const isTagChecked = c => {
     const result = checkedTag.indexOf(c)
     return result !== -1;
+  }
+
+  const handlePublished = (e) => {
+    setValues({...values, published: e.target.checked})
+    formData.set('published', e.target.checked)
   }
 
   const showCategories = () => {
@@ -235,6 +247,11 @@ const UpdateBlog = ({router, token}) => {
         </div>
         <div className="form-group">
           {sunEditorHtml()}
+        </div>
+        <div className="form-group form-check">
+          <input type="checkbox" className="form-check-input" id="published" name="published" onChange={e => (handlePublished(e))}
+                 checked={published} />
+          <label className="form-check-label" htmlFor="published">Published</label>
         </div>
         <div>
           <button type="submit" className="btn btn-primary">Publish</button>
