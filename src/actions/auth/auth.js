@@ -13,9 +13,6 @@ export const logout = async () => {
 }
 
 export const setCookie = async (key, value) => {
-  console.log(key)
-  console.log(PRODUCTION)
-
   if (process.browser) {
     if(key === 'token' && PRODUCTION){
       await Cookies.set(key, value, {expires: 7, sameSite: 'lax', secure: true})
