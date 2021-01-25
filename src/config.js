@@ -9,3 +9,4 @@ export const FACEBOOK_ID = publicRuntimeConfig.FACEBOOK_ID
 export const LIMIT = publicRuntimeConfig.LIMIT
 export const DISQUS_SHORTNAME = publicRuntimeConfig.DISQUS_SHORTNAME
 export const GOOGLE_ID = publicRuntimeConfig.GOOGLE_ID
+export const SECURE_COOKIE = !!publicRuntimeConfig.PRODUCTION

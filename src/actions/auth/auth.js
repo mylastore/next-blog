@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie'
+import {SECURE_COOKIE} from "../../config"
 
 export const handleSession = async (res) => {
   if (res.status === 440) {
@@ -13,6 +14,9 @@ export const logout = async () => {
 
 export const setCookie = async (key, value) => {
   if (process.browser) {
+    if(key === 'token' && SECURE_COOKIE){
+      await Cookies.set(key, value, {expires: 7, sameSite: 'lax', secure: SECURE_COOKIE})
+    }
     await Cookies.set(key, value, {expires: 7, sameSite: 'lax'})
   }
 }
