@@ -1,5 +1,5 @@
+import {PRODUCTION} from "../../config"
 import Cookies from 'js-cookie'
-import {SECURE_COOKIE} from "../../config"
 
 export const handleSession = async (res) => {
   if (res.status === 440) {
@@ -13,11 +13,16 @@ export const logout = async () => {
 }
 
 export const setCookie = async (key, value) => {
+  console.log(key)
+  console.log(PRODUCTION)
+
   if (process.browser) {
-    if(key === 'token' && SECURE_COOKIE){
-      await Cookies.set(key, value, {expires: 7, sameSite: 'lax', secure: SECURE_COOKIE})
+    if(key === 'token' && PRODUCTION){
+      await Cookies.set(key, value, {expires: 7, sameSite: 'lax', secure: true})
     }
-    await Cookies.set(key, value, {expires: 7, sameSite: 'lax'})
+    if(key === 'rememberMe') {
+      await Cookies.set(key, value, {expires: 7, sameSite: 'lax'})
+    }
   }
 }
 
