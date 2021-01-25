@@ -1,4 +1,4 @@
-import {authenticate, isAuth} from '../../actions/auth'
+import {authenticate, isAuth} from '../../actions/auth/auth'
 import Router from 'next/router'
 import {api} from '../../actions/api'
 import {GOOGLE_ID} from "../../config"

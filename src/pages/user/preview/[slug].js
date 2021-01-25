@@ -4,7 +4,7 @@ import {IMG} from "../../../config"
 import {showCategories, showTags} from "../../../components/auth/blog/CatsAndTags"
 import Link from 'next/link'
 import AuthComponent from "../../../components/auth/AuthComponent";
-import parseCookies from "../../../actions/parseCookies";
+import parseCookies from "../../../actions/auth/parseCookies";
 import timeAgo from "../../../actions/timeAgo";
 import styles from '../../../styles/blog.module.css'
 

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {getCookie, isAuth} from "../../../actions/auth"
+import {getCookie, isAuth} from "../../../actions/auth/auth"
 import {api} from '../../../actions/api'
 import Link from "next/link"
 
@@ -77,6 +77,7 @@ const AllBlogs = () => {
             })
             }
             <div className="float-right">
+              <span className={'badge bg-light text-dark mr-2'}>{b.published ? 'Published ' : 'Draft '}</span>
               {updateButton(b)}&nbsp;
               <button className="btn btn-sm btn-outline-danger" onClick={() => confirmDelete(b.slug)}>Delete</button>
             </div>

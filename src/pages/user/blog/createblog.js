@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 import Router, {withRouter} from 'next/router'
 import {apiForm, api} from '../../../actions/api'
 import 'suneditor/dist/css/suneditor.min.css'
-import handleAuthSSR from "../../../actions/authSSR"
+import handleAuthSSR from "../../../actions/auth/authSSR"
 import AuthComponent from "../../../components/auth/AuthComponent"
 import dynamic from "next/dynamic"
 import {Form, Formik} from 'formik'

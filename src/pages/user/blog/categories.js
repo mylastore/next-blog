@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {api} from '../../../actions/api'
 import Layout from "../../../components/Layout";
 import AuthComponent from "../../../components/auth/AuthComponent"
-import handleAuthSSR from "../../../actions/authSSR"
+import handleAuthSSR from "../../../actions/auth/authSSR"
 import {Form, Formik} from 'formik'
 import {CategoryTagSchema} from "../../../actions/schemas"
 import {FormInput} from "../../../components/Form"

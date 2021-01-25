@@ -1,6 +1,6 @@
 import Layout from "../../../../components/Layout"
 import AuthComponent from "../../../../components/auth/AuthComponent"
-import handleAuthSSR from "../../../../actions/authSSR"
+import handleAuthSSR from "../../../../actions/auth/authSSR"
 import {withRouter} from "next/router"
 import React, {useEffect, useState} from "react"
 import {api, apiForm} from "../../../../actions/api"
@@ -40,7 +40,6 @@ const UpdateBlog = ({router, token}) => {
     if (slug) {
       try {
         const res = await api('GET', `getblog/${slug}`)
-        console.log('res ',res)
         if (res.status >= 400) {
           return flash(res.message, 'danger')
         }

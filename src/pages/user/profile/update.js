@@ -3,8 +3,8 @@ import {useContext, useEffect, useState} from "react"
 import {api} from "../../../actions/api"
 import {UserContext} from "../../../components/context/UserContext"
 import AuthComponent from "../../../components/auth/AuthComponent"
-import handleAuthSSR from "../../../actions/authSSR"
-import {logout} from "../../../actions/auth"
+import handleAuthSSR from "../../../actions/auth/authSSR"
+import {logout} from "../../../actions/auth/auth"
 import Router from "next/router"
 import {Form, Formik} from 'formik'
 import {FormInput, FormTextArea} from '../../../components/Form'
@@ -35,7 +35,6 @@ const updateProfile = ({token}) => {
   const getUser = async () => {
     try {
       const res = await api('GET', `user/profile/${user.username}`, {}, token)
-      console.log(res)
       if (res.status >= 400) {
         return flash(res.message, 'danger')
       }
@@ -142,7 +141,6 @@ const updateProfile = ({token}) => {
     if(result){
       try {
         const res = await api('POST', `user/delete`, {_id: user._id}, token)
-        console.log('res ',res)
         if (res.status >= 400) {
           window.scrollTo(500, 0);
           return flash(res.message, 'danger')

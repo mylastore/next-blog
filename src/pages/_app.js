@@ -2,7 +2,6 @@ import Head from 'next/head'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/globals.css'
 import 'nprogress/nprogress.css'
-import 'react-quill/dist/quill.snow.css'
 import {useEffect} from "react"
 import Bus from "../actions/bus"
 import {APP_NAME} from "../config.js"

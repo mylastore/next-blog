@@ -3,7 +3,7 @@ import Layout from "../../../components/Layout"
 import {withRouter} from "next/router"
 import jwt from 'jsonwebtoken'
 import {useEffect, useState} from "react"
-import isAuth from "../../../actions/isAuth";
+import isAuth from "../../../actions/auth/isAuth";
 
 const userActivation = ({router}) => {
   const [values, setValues] = useState({

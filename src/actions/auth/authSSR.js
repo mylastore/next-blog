@@ -1,4 +1,4 @@
-import {api} from './api'
+import {api} from '../api'
 import parseCookies from "./parseCookies";
 export default async function handleAuthSSR(req) {
   const cookies = parseCookies(req)

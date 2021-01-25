@@ -2,7 +2,7 @@ import ActiveLink from './ActiveLink'
 import React, {useContext, useState} from "react";
 import {UserContext} from "./context/UserContext";
 import {api} from "../actions/api";
-import {logout} from "../actions/auth";
+import {logout} from "../actions/auth/auth";
 import Router from "next/router";
 import Search from "./auth/blog/Search";
 import {APP_NAME} from '../config'

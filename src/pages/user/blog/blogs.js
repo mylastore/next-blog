@@ -1,6 +1,6 @@
 import Layout from "../../../components/Layout"
 import AllBlogs from '../../../components/auth/blog/AllBlogs'
-import handleAuthSSR from "../../../actions/authSSR";
+import handleAuthSSR from "../../../actions/auth/authSSR";
 import AuthComponent from "../../../components/auth/AuthComponent";
 
 const Blogs = () => {

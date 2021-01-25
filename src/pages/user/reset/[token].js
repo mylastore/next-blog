@@ -1,7 +1,7 @@
 import {api} from "../../../actions/api"
 import Layout from "../../../components/Layout"
 import {withRouter} from "next/router"
-import isAuth from "../../../actions/isAuth"
+import isAuth from "../../../actions/auth/isAuth"
 import {Form, Formik} from "formik"
 import {ResetPasswordSchema} from "../../../actions/schemas"
 import {FormInput} from "../../../components/Form"

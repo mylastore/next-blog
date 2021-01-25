@@ -4,9 +4,9 @@ import Link from 'next/link'
 import Router from 'next/router'
 import {api} from '../../actions/api'
 import GoogleLoginComponent from "../../components/auth/GoogleLoginComponent"
-import {authenticate} from '../../actions/auth'
+import {authenticate} from '../../actions/auth/auth'
 import {UserContext} from "../../components/context/UserContext"
-import isAuth from "../../actions/isAuth"
+import isAuth from "../../actions/auth/isAuth"
 import {LoginSchema} from "../../actions/schemas"
 import{Form, Formik} from 'formik'
 import {FormInput} from "../../components/Form"

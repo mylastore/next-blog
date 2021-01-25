@@ -1,6 +1,6 @@
 import RegisterComponent from '../../components/auth/RegisterComponent'
 import Layout from '../../components/Layout'
-import isAuth from "../../actions/isAuth";
+import isAuth from "../../actions/auth/isAuth";
 
 const Register = () => {
   return (

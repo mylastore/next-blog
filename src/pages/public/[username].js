@@ -6,7 +6,7 @@ import timeAgo from "../../actions/timeAgo"
 import Head from "next/head";
 import {APP_NAME, DOMAIN, FACEBOOK_ID} from "../../config";
 import AuthorEmailComponent from "../../components/forms/AuthorEmailComponent"
-import {isAuth} from "../../actions/auth"
+import {isAuth} from "../../actions/auth/auth"
 
 const publicUserProfile = ({data, error}) => {
 
@@ -74,7 +74,7 @@ const publicUserProfile = ({data, error}) => {
                   <h4>{user.name}</h4>
                   <h5>@{user.username}</h5>
                   <span className="small">Blogs {blogs.length}</span><br/>
-                  <span className="small">Member Since </span>
+                  <span className="small">Member since </span>
                   <span className="small">{timeAgo(user.createdAt)}</span>
                   <hr/>
                   {currentUser && user.username && (

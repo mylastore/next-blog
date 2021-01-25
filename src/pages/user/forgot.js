@@ -1,6 +1,6 @@
 import Layout from "../../components/Layout"
 import {api} from '../../actions/api'
-import isAuth from "../../actions/isAuth"
+import isAuth from "../../actions/auth/isAuth"
 import {Form, Formik} from "formik";
 import {FormInput} from "../../components/Form"
 import {EmailSchema} from "../../actions/schemas";
