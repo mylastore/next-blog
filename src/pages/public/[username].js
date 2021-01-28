@@ -105,23 +105,17 @@ const publicUserProfile = ({data, error}) => {
 export async function getServerSideProps({query}) {
   try{
     const res = await api('GET', `user/account/${query.username}`)
-    if (res.status >= 400) {
-      return {
-        props: {
-          error: res.message
-        }
-      }
-    }
     return {
       props: {
-        data: res
+        data: res,
+        error: res.status >= 400 ? res.message : null
       }
     }
 
   }catch(err){
     return {
       props: {
-        error: err.message
+        error: err
       }
     }
   }
