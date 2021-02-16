@@ -14,20 +14,6 @@ import {FormInput} from "../../components/Form"
 const Login = () => {
   const {setUser} = useContext(UserContext)
 
-  const handleSubmit = async (values) => {
-    try {
-      const res = await api('POST', 'user/login', values)
-      if (res && res.status >= 400) {
-        return flash(res.message, 'danger')
-      }
-      await authenticate(res)
-      delete res['token']
-      setUser(res)
-      await Router.push(`/public/${res.username}`)
-    } catch (err) {
-      return flash(err.message, 'danger')
-    }
-  }
   return (
     <Layout>
       <section>
@@ -39,7 +25,18 @@ const Login = () => {
                 initialValues={{email: '', password: ''}}
                 validationSchema={LoginSchema}
                 onSubmit={async (values, actions) => {
-                  await handleSubmit(values)
+                  try {
+                    const res = await api('POST', 'user/login', values)
+                    if (res && res.status >= 400) {
+                      return flash(res.message, 'danger')
+                    }
+                    await authenticate(res)
+                    delete res['token']
+                    setUser(res)
+                    await Router.push(`/public/${res.username}`)
+                  } catch (err) {
+                    return flash(err.message, 'danger')
+                  }
                   actions.resetForm({
                     values: {email: '', password: ''}
                   })
@@ -50,7 +47,7 @@ const Login = () => {
                   <FormInput name="password" type="password" label="Password"/>
                   <button type={'submit'} className="btn btn-block btn-primary mb-4">Login</button>
                   <p className="text-center">or</p>
-                  {GoogleLoginComponent()}
+                  <GoogleLoginComponent />
                 </Form>
               </Formik>
               <p className="clearfix">&nbsp;</p>

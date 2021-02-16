@@ -53,8 +53,6 @@ const updateProfile = ({token}) => {
     }
   }
 
-
-
   const handleSubmit = async (values) => {
     try {
       const res = await api('PATCH', `user/account/${user.username}`, values, token)
@@ -212,6 +210,7 @@ const updateProfile = ({token}) => {
 }
 
 export async function getServerSideProps({req}) {
+  // returns token for client
   return await handleAuthSSR(req)
 }
 

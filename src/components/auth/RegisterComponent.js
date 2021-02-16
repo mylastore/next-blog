@@ -31,7 +31,7 @@ const RegisterComponent = () => {
       <div>
         <h1 className="p-3">Register</h1>
         <Formik
-          initialValues={{email: ''}}
+          initialValues={{email: '', name: '', password: ''}}
           validationSchema={RegisterSchema}
           onSubmit={async (values, actions) => {
             await handleSubmit(values)

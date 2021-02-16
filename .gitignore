@@ -35,3 +35,4 @@ yarn-error.log*
 np
 # vercel
 .vercel
+/certificates/
