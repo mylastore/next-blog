@@ -148,11 +148,6 @@ const Nav = () => {
                 <a className="nav-link">Support</a>
               </ActiveLink>
             </li>
-            <li className={'nav-item'}>
-              <ActiveLink activeClassName="active" href="/insta">
-                <a className="nav-link">Insta</a>
-              </ActiveLink>
-            </li>
           </ul>
           <ul className="navbar-nav mr-auto ml-auto">
             <li className="nav-item">

@@ -77,9 +77,12 @@ const AllBlogs = () => {
             })
             }
             <div className="float-right">
-              <span className={'badge bg-light text-dark mr-2'}>{b.published ? 'Published ' : 'Draft '}</span>
+                            <span
+                              className={'badge bg-light text-dark mr-2'}>{b.published ? 'Published ' : 'Draft '}</span>
               {updateButton(b)}&nbsp;
-              <button className="btn btn-sm btn-outline-danger" onClick={() => confirmDelete(b.slug)}>Delete</button>
+              <button className="btn btn-sm btn-outline-danger"
+                      onClick={() => confirmDelete(b.slug)}>Delete
+              </button>
             </div>
             <style jsx>{`
               .badge-light{
@@ -96,10 +99,12 @@ const AllBlogs = () => {
           </div>
         )
       })
+    } else {
+      return (
+
+        <section className={'container-fluid'}>NO BLOGS FOUND</section>
+      )
     }
-    return (
-      <div><p>No Blogs Yet!</p></div>
-    )
   }
 
   return (
