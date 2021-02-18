@@ -47,7 +47,7 @@ const publicUserProfile = ({data, error}) => {
       })
     }
     return (
-      <div><p>Look like {user.username} has not created any blogs yet! <br/>⊙︿⊙</p></div>
+      <div><p>Looks like {user.username} has not created any blogs yet! <br/>⊙︿⊙</p></div>
     )
   }
 
