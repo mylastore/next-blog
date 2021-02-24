@@ -1,4 +1,3 @@
-import {PRODUCTION} from "../../config"
 import Cookies from 'js-cookie'
 
 export const handleSession = async (res) => {
@@ -12,15 +11,12 @@ export const logout = async () => {
   await removeCookie('rememberMe')
 }
 
-export const setCookie = async (key, value) => {
-  if (process.browser) {
-    if(key === 'token'){
-      await Cookies.set(key, value, {expires: 7, sameSite: 'lax', secure: true})
-    }
-    if(key === 'rememberMe') {
-      await Cookies.set(key, value, {expires: 7, sameSite: 'lax'})
-    }
-  }
+export const setToken = async (value) => {
+  await Cookies.set('token', value, {expires: 7, sameSite: 'lax'})
+}
+
+export const setCookie = async (value) => {
+  await Cookies.set('rememberMe', value, {expires: 7, sameSite: 'lax'})
 }
 
 export const removeCookie = async (key) => {
@@ -39,10 +35,6 @@ export const getCookieAsJSON = (key) => {
   if (process.browser) {
     return Cookies.getJSON(key)
   }
-}
-
-export const authenticate = async (data) => {
-  await setCookie('token', data.token)
 }
 
 export const isAuth = () => {

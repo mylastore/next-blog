@@ -11,7 +11,7 @@ export const UserContextProvider = (props) => {
 
   useEffect(() => {
     (async () => {
-      await setCookie('rememberMe', JSON.stringify(user))
+       await setCookie(JSON.stringify(user))
     })()
   }, [user]);
 

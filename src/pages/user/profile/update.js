@@ -153,7 +153,6 @@ const updateProfile = ({token}) => {
         return flash(err.message, 'danger')
       }
     }
-
   }
 
   const passwordForm = () => (

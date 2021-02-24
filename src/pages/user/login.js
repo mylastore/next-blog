@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Router from 'next/router'
 import {api} from '../../actions/api'
 import GoogleLoginComponent from "../../components/auth/GoogleLoginComponent"
-import {authenticate} from '../../actions/auth/auth'
+import {setToken} from '../../actions/auth/auth'
 import {UserContext} from "../../components/context/UserContext"
 import isAuth from "../../actions/auth/isAuth"
 import {LoginSchema} from "../../actions/schemas"
@@ -13,7 +13,6 @@ import {FormInput} from "../../components/Form"
 
 const Login = () => {
   const {setUser} = useContext(UserContext)
-
   return (
     <Layout>
       <section>
@@ -30,10 +29,13 @@ const Login = () => {
                     if (res && res.status >= 400) {
                       return flash(res.message, 'danger')
                     }
-                    await authenticate(res)
-                    delete res['token']
-                    setUser(res)
-                    await Router.push(`/public/${res.username}`)
+                    await setToken(res.token)
+                    // wait to setToken before deleting it
+                    setTimeout(async ()=>{
+                      delete await res['token']
+                      setUser(res)
+                      Router.push(`/public/${res.username}`)
+                    }, 200)
                   } catch (err) {
                     return flash(err.message, 'danger')
                   }
