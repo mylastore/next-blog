@@ -62,10 +62,10 @@ const CreateBlog = ({token, router}) => {
 
     if (e.target.files) {
       setFormValues({...formValues, showImg: true})
-      let reader = new FileReader();
+      let reader = new FileReader()
       reader.onload = function () {
-        const output = document.getElementById('output');
-        output.src = reader.result;
+        const output = document.getElementById('output')
+        output.src = reader.result
       }
       reader.readAsDataURL(e.target.files[0])
     }
@@ -132,7 +132,7 @@ const CreateBlog = ({token, router}) => {
       initialValues={{title: '', published: false, categories: [], tags: []}}
       validationSchema={
         Yup.object().shape({
-          title: Yup.string().min(2).max(60).required('Required')
+          title: Yup.string().min(2).max(160).required('Required')
         })
       }
       onSubmit={async (values, actions) => {
