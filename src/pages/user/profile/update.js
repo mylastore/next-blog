@@ -12,7 +12,6 @@ import {ResetPasswordSchema, UserUpdateSchema} from "../../../actions/schemas"
 
 const updateProfile = ({token}) => {
   const {user, setUser} = useContext(UserContext)
-
   const [userValues, setUserValues] = useState({
     username: '',
     name: '',
@@ -21,7 +20,6 @@ const updateProfile = ({token}) => {
     location: '',
     website: ''
   })
-
   const {username, name, email, about, location, website} = userValues
 
   useEffect(() => {
