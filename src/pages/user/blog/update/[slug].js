@@ -236,7 +236,6 @@ const UpdateBlog = ({router, token}) => {
     />
   )
 
-
   const blogForm = () => {
     return (
       <form onSubmit={updateBlog}>
@@ -253,7 +252,7 @@ const UpdateBlog = ({router, token}) => {
           <label className="form-check-label" htmlFor="published">Published</label>
         </div>
         <div>
-          <button type="submit" className="btn btn-primary">Publish</button>
+          <button type="submit" className="btn btn-primary">{published ? 'Update & Published' : 'Update Blog'}</button>
         </div>
       </form>
     )
